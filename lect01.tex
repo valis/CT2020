@@ -1,0 +1,261 @@
+\documentclass{beamer}
+
+\usepackage[english,russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{bibentry}
+\usepackage[all]{xy}
+
+\usetheme{Szeged}
+% \usetheme{Montpellier}
+% \usetheme{Malmoe}
+% \usetheme{Berkeley}
+% \usetheme{Hannover}
+\usecolortheme{beaver}
+
+\newcommand{\cat}[1]{\mathbf{#1}}
+\renewcommand{\C}{\cat{C}}
+\newcommand{\Set}{\cat{Set}}
+\newcommand{\FinSet}{\cat{FinSet}}
+\newcommand{\Grp}{\cat{Grp}}
+\renewcommand{\Vec}{\cat{Vec}}
+\newcommand{\Hask}{\cat{Hask}}
+\newcommand{\Mat}{\cat{Mat}}
+\newcommand{\Num}{\cat{Num}}
+
+\AtBeginSection[]
+{
+\begin{frame}[c,plain,noframenumbering]
+\frametitle{План лекции}
+\tableofcontents[currentsection]
+\end{frame}
+}
+
+\makeatletter
+\defbeamertemplate*{footline}{my theme}{
+    \leavevmode
+}
+\makeatother
+
+\begin{document}
+
+\title{Теория категорий}
+\subtitle{Определение категорий}
+\author{Валерий Исаев}
+\maketitle
+
+\section{Определение категорий}
+
+\begin{frame}
+\bibliographystyle{amsplain}
+\nobibliography{ref}
+\frametitle{Литература}
+\begin{itemize}
+\item \bibentry{maclane}
+\item \bibentry{goldblatt}
+\item \bibentry{elephant}
+\item \bibentry{sheaves-in-geom}
+\item \bibentry{categorical-algebra}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Мотивация}
+\begin{itemize}
+\item В различных контекстах один и тот же объект может иметь различные описания.
+\item Множества: $\mathbb{N}$, $\mathbb{Z}$ и $\mathbb{Q}$.
+\item Группы: $(\{ 0, 1 \}, +)$ и $Z/2$.
+\item Типы в языках программирования: $(a, b)$ и $(b, a)$.
+\item Еще пример: $Bool$ и $Maybe\ ()$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Изоморфизмы}
+\begin{itemize}
+\item Когда два различных представления $A$ и $B$ задают один и тот же объект?
+\item Когда существует пара <<функий>> $f : A \to B$ и $g : B \to A$, преобразующих <<элементы>> $A$ в <<элементы>> $B$ и обратно.
+\item И эти функции взаимообратны.
+\item Пример: $f = g = \lambda (x, y) \to (y, x) : (a, b) \to (b, a)$.
+\item Пример:
+\begin{align*}
+& f = \lambda x \to if\ x\ then\ Just\ ()\ else\ Nothing : Bool \to Maybe\ () \\
+& g = maybe\ True\ (const\ False) : Maybe\ () \to Bool
+\end{align*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Определение категории}
+\emph{Категория} $\C$ состоит из:
+\begin{itemize}
+\item Коллекции объектов $Ob(\C)$ и коллекции морфизмов $Hom_\C(X, Y)$ для любой пары объектов $X, Y \in Ob(\C)$.
+    Обычно вместо $f \in Hom_\C(X, Y)$ мы будем писать $f : X \to Y$.
+\item Операции, сопоставляющей каждому объекту $X \in Ob(\C)$ морфизм $id_X : X \to X$.
+\item Операции, сопоставляющей каждой паре морфизмов $f : X \to Y$ и $g : Y \to Z$ морфизм $g \circ f : X \to Z$.
+\item Эти операции должны удовлетворять следующим свойствам: $g \circ id_X = g$, $id_Y \circ f = f$ и $(h \circ g) \circ f = h \circ (g \circ f)$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Изоморфизмы}
+\begin{itemize}
+\item Морфизм $f : X \to Y$ называется \emph{изоморфизмом}, если существует морфизм $g : Y \to X$ такой, что $g \circ f = id_X$ и $f \circ g = id_Y$.
+\item Объекты $X$ и $Y$ называются \emph{изоморфными}, если существует изоморфизм $f : X \to Y$.
+\item Если $X$ -- объект категории $\C$, то \emph{моноид эндоморфизмов} $X$ (обозначение: $Endo_\C(X)$) -- это множество $Hom_\C(X, X)$ с операцией композиции в качестве бинарной операции моноида, и $id_X$ в качестве единицы.
+\item Если $X$ -- объект категории $\C$, то \emph{группа автоморфизмов} $X$ (обозначение: $Aut_\C(X)$) -- это множество изоморфизмов $f : X \to X$ с операциями, определенными аналогичным предыдущему пункту образом.
+\end{itemize}
+\end{frame}
+
+\section{Примеры}
+
+\begin{frame}
+\frametitle{Категория $\Set$}
+\begin{itemize}
+\item Объекты категории $\Set$ -- множества.
+\item $Hom_\Set(X, Y)$ -- множество функций из $X$ в $Y$.
+\item $id_X$ -- тождественная функция: $id_X(x) = x$.
+\item $g \circ f$ -- композиция функций: $(g \circ f)(x) = g(f(x))$.
+\item Изоморфизмы -- биекции.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Категория $\FinSet$}
+\begin{itemize}
+\item Объекты категории $\FinSet$ -- конечные множества.
+\item $Hom_\Set(X, Y)$ -- множество функций из $X$ в $Y$.
+\item $id_X$ -- тождественная функция: $id_X(x) = x$.
+\item $g \circ f$ -- композиция функций: $(g \circ f)(x) = g(f(x))$.
+\item Множества изоморфны тогда и только тогда, когда они содержат одинаковое число элементов.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Категория $\Grp$}
+\begin{itemize}
+\item Объекты категории $\Grp$ -- группы.
+\item $Hom_\Grp(G, H)$ -- множество гомоморфизмов групп $G$ и $H$.
+\item $id_G$ -- тождественный гомоморфизм: $id_G(x) = x$.
+\item $g \circ f$ -- композиция гомоморфизмов: $(g \circ f)(x) = g(f(x))$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Категория $\Vec$}
+\begin{itemize}
+\item Объекты категории $\Vec$ -- конечномерные векторные пространства.
+\item $Hom_\Vec(V, W)$ -- множество линейных операторов из $V$ в $W$.
+\item $id_V$ -- тождественный линейный оператор.
+\item $g \circ f$ -- композиция линейных операторов.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Категория $\Hask$}
+\begin{itemize}
+\item Объекты категории $\Hask$ -- типы хаскелла.
+\item $Hom_\Hask(A, B)$ -- множество функций хаскелла, имеющих тип $A \to B$.
+\item $id_A$ -- тождественная функция: $id_A = \lambda x \to x$.
+\item $g \circ f$ -- композиция функций: $g \circ f = \lambda x \to g\ (f\ x)$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Категория $\Mat$}
+\begin{itemize}
+\item Объекты категории $\Mat$ -- натуральные числа.
+\item $Hom_\Mat(n, k)$ -- множество матриц над $\mathbb{R}$ размера $n \times k$.
+\item $id_n$ -- единичная матрица размера $n \times n$.
+\item $A \circ B$ -- произведение матриц.
+\item Матрица является изоморфизмом тогда и только тогда, когда она обратима.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Категория $\Num$}
+\begin{itemize}
+\item Объекты категории $\Num$ -- натуральные числа.
+\item $Hom_\Num(n, k)$ -- множество кортежей $(a_1, \ldots a_n)$ таких, что $1 \leq a_i \leq k$
+\item $id_n = (1, \ldots n)$.
+\item $(b_1, \ldots b_k) \circ (a_1, \ldots a_n) = (b_{a_1}, \ldots b_{a_n})$.
+\end{itemize}
+\end{frame}
+
+\section{Графы и диаграммы}
+
+\begin{frame}
+\frametitle{Графы}
+\begin{itemize}
+\item \emph{Граф} состоит из коллекции вершин $V$ и коллекции ребер $E(X, Y)$ для любой пары вершин $X, Y \in V$.
+\item Любой категории можно сопоставить граф.
+\item Примеры:
+\[ \bullet \quad \bullet \quad \bullet \]
+\[ \xymatrix{ \bullet \ar@/^/[r] \ar@/_/[r] & \bullet \ar[r] & \bullet } \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Диаграммы}
+\begin{itemize}
+\item \emph{Диаграмма} -- граф, вершины которого являются объектами некоторой категории, а ребра -- морфизмами.
+\item Диаграмма является \emph{коммутативной}, если для любой пары вершин в графе $X$ и $Y$, композиция любого пути из $X$ в $Y$ дает один и тот же результат.
+\item Примеры:
+\[ \xymatrix{ A \ar[r]^h \ar[d]_f & C \\
+              B \ar[ur]_g \\
+              \ar@{}[r]^{g \circ f = h} &
+            }
+\qquad
+\xymatrix{ A \ar[r]^h \ar[d]_f & C \ar[d]^k \\
+           B \ar[r]_g & D \\
+           \ar@{}[r]^{g \circ f = k \circ h} &
+         } \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Склейка диаграмм}
+\[ \xymatrix{ \mathbb{Z} \ar[r]^{+ 3} \ar[d]_{* (-1)} & \mathbb{Z} \ar[d]^{* (-1)} \\
+              \mathbb{Z} \ar[r]_{- 3} & \mathbb{Z}
+            }
+\qquad
+\xymatrix{ \mathbb{Z} \ar[r]^{|-|} \ar[d]_{* (-1)} & \mathbb{N} \\
+              \mathbb{Z} \ar[ur]_{|-|}
+            } \]
+\[ \xymatrix{ \mathbb{Z} \ar[r]^{+ 3} \ar[d]_{* (-1)} & \mathbb{Z} \ar[d]_{* (-1)} \ar[r]^{|-|} & \mathbb{N} \\
+              \mathbb{Z} \ar[r]_{- 3} & \mathbb{Z} \ar[ur]_{|-|}
+            } \]
+\end{frame}
+
+\begin{frame}
+\frametitle{Частные случаи категорий}
+\begin{itemize}
+\item Категории, в которых все морфизмы имеют вид $id_X$, называются \emph{дискретными}.
+\item Категории с ровно одним объектом -- моноиды.
+\item Категории, в которых все множества $Hom(X, Y)$ содержат максимум один элемент, -- предпорядки.
+\item Категории, в которых все морфизмы являются изоморфизмами, называются \emph{группоидами}.
+\item Категории, в которых изоморфные объекты равны, называются \emph{скелетными}.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Малые категории}
+\begin{itemize}
+\item Если коллекция всех морфизмов категории является множеством, то такая категория называется \emph{малой}.
+Категории, которые не (обязательно) являются малыми, называют \emph{большими}.
+\item Что точно означают эти понятия зависит от формализма, в котором мы работаем.
+\item Например, в ZFC вводится понятие класса, и большие категории -- это категории, коллекция объектов которых является классом.
+\item Если мы будем формализовывать категории в теории типов, то объекты малых категории лежат в $Set_0$, а объекты больших в $Set_1$.
+\item Категории, объекты которых лежат в $Set_2$, называются \emph{очень большими}, и так далее.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Локально малые категории}
+\begin{itemize}
+\item Категория называется \emph{локально малой}, если для любых объектов $A$ и $B$ класс $Hom(A,B)$ является множеством.
+\item Подавляющее большинство категорий, возникающих на практике, являются локально малыми.
+\item Любая малая категория является локально малой, но, конечно, не наоборот.
+\end{itemize}
+\end{frame}
+
+\end{document}

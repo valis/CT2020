@@ -1,0 +1,114 @@
+\documentclass[draft]{article}
+\usepackage[russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{cmap}
+\usepackage{amsfonts}
+\usepackage[all]{xy}
+
+\newcommand{\cat}[1]{\mathbf{#1}}
+\renewcommand{\C}{\cat{C}}
+\newcommand{\Set}{\cat{Set}}
+\newcommand{\FinSet}{\cat{FinSet}}
+\newcommand{\Grp}{\cat{Grp}}
+\newcommand{\Vec}{\cat{Vec}}
+\newcommand{\Hask}{\cat{Hask}}
+\newcommand{\Mat}{\cat{Mat}}
+\newcommand{\Num}{\cat{Num}}
+
+\newenvironment{tolerant}[1]{\par\tolerance=#1\relax}{\par}
+
+\begin{document}
+
+\title{Задания}
+\maketitle
+
+Если $M$ -- моноид, то мы будем обозначать $\C_M$ категорию с одним объектом $*$ и множеством морфизмов $Hom_{\C_M}(*, *) = M$, операция композиции и тождественный морфизм в которой определяются как соответствующие операции в $M$.
+
+Предпорядок $(X,\leq)$ -- это множество $X$ с рефлексивным и транзитивным бинарным отношением $\leq$.
+Задать структуру предпорядка на множестве -- это то же самое, что и задать на нем структуру категории, в которой между любой парой объектов существует максимум один морфизм.
+Если $(X,\leq)$ -- предпорядок, то мы будем обозначать соответствующую ему категорию как $\C_{(X,\leq)}$.
+Множество объектов этой ктаегории равно $X$, а множество морфизмов $Hom_{\C_{(X,\leq)}}(x, y)$ состоит из одного элемента, если $x \leq y$, и пусто в противном случае.
+
+\begin{enumerate}
+
+\item Изоморфны ли следующие объекты категории $\Hask$? Если да, напишите функции, устанавливающие изоморфизм.
+\begin{enumerate}
+\item $Bool$ и $Maybe\ Bool$.
+\item $Either\ Bool\ Bool$ и $(Bool, Bool)$.
+\item $Integer$ и $Maybe\ Integer$.
+\item $Integer$ и $[()]$.
+\end{enumerate}
+
+\item Пусть $M$ -- некоторый моноид.
+Определим тогда категорию $\C_M$ как категорию с одним объектом и множеством морфизмов равным $M$.
+Композиции и тождественный морфизм определяются из структуры моноида.
+Какие морфизмы являются изоморфизмами в следующих категориях?
+\begin{enumerate}
+\item $\C_{(\mathbb{N},+)}$.
+\item $\C_{(\mathbb{N},*)}$.
+\item $\C_{(\mathbb{Z},+)}$.
+\item $\C_{(\mathbb{Z},*)}$.
+\item $\C_{(\mathbb{Q},+)}$.
+\item $\C_{(\mathbb{Q},*)}$.
+\end{enumerate}
+
+\item Предпорядок называется частичным порядком, если из условия, что $x \leq y$ и $y \leq x$, следует, что $x = y$.
+Чему в категориальныъ терминах соотвествует это свойство?
+
+\item Опишите следующие моноиды и группы:
+\begin{enumerate}
+\item $Aut_\Set(A)$, где $A$ -- множество букв русского алфавита.
+\item $Aut_{\FinSet}(A)$, где $A$ -- множество букв русского алфавита.
+\item $Endo_{\C_M}(*)$, где $M$ -- некоторый моноид.
+\item $Endo_\Grp(\mathbb{Z})$.
+\item $Aut_\Grp(\mathbb{Z})$.
+\item $Endo_\cat{Ring}(\mathbb{Z})$, где $\cat{Ring}$ -- категория колец с единицей.
+\item $Aut_\C(X)$, где $\C$ -- скелетная категория, и $X$ -- произвольный объект $\C$.
+\item $Endo_\Vec(\mathbb{R}^n)$.
+\item $Aut_\Num(n)$.
+\item $Endo_{\C_{(X,\leq)}}(x)$, где $x$ -- произвольный элемент $X$.
+\end{enumerate}
+
+\item Какие из следующих категорий являются скелетными: $\Set$, $\FinSet$, $\Grp$, $\Vec$, $\Hask$, $\Mat$, $\Num$?
+
+\item Какие из следующих категорий являются группоидами: $\Set$, $\FinSet$, $\Grp$, $\Vec$, $\Hask$, $\Mat$, $\Num$?
+
+\item Какие из следующих категорий могут быть скелетными и в каких случаях?
+\begin{enumerate}
+\item Дискретные категории.
+\item Категории вида $\C_M$.
+\item Категории предпорядка.
+\item Группоиды.
+\end{enumerate}
+
+\item Какие из следующих категорий могут быть группоидами и в каких случаях?
+\begin{enumerate}
+\item Дискретные категории.
+\item Категории вида $\C_M$.
+\item Категории предпорядка.
+\item Скелетные категории.
+\end{enumerate}
+
+\item Пусть $f, f' : X \to Y$ и $g, g' : Y \to X$ -- морфизмы в некоторой категории $\C$.
+Докажите, что если диаграммы
+\[ \xymatrix{ & Y \ar[dr]^g & \\
+              X \ar[ur]^f \ar[rr]_{id_X} & & X
+            }
+\qquad
+\xymatrix{ & X \ar[dr]^{f'} & \\
+           Y \ar[ur]^{g'} \ar[rr]_{id_Y} & & Y
+            } \]
+коммутируют и $f = f'$, то $X$ и $Y$ изоморфны.
+
+\item Приведите пример, показывающий, что условие $f = f'$ в предыдущем задании является необходимым.
+
+\item Какие из следующих категорий являются малыми: $\Set$, $\FinSet$, $\Grp$, $\Vec$, $\Hask$, $\Mat$, $\Num$, $\C_M$, $\C_{(X,\leq)}$?
+
+\item
+\tolerant{500}{
+Какие из следующих категорий являются локально малыми: $\Set$, $\FinSet$, $\Grp$, $\Vec$, $\Hask$, $\Mat$, $\Num$, $\C_M$, $\C_{(X,\leq)}$?
+}
+
+\end{enumerate}
+
+\end{document}
