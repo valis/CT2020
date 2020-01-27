@@ -1,0 +1,55 @@
+\documentclass[draft]{article}
+\usepackage[russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{cmap}
+\usepackage{amsfonts}
+\usepackage[all]{xy}
+
+\newcommand{\cat}[1]{\mathbf{#1}}
+\renewcommand{\C}{\cat{C}}
+\newcommand{\Set}{\cat{Set}}
+\newcommand{\Grp}{\cat{Grp}}
+\newcommand{\Ab}{\cat{Ab}}
+\newcommand{\Vec}{\cat{Vec}}
+\newcommand{\Hask}{\cat{Hask}}
+\newcommand{\Mat}{\cat{Mat}}
+\newcommand{\Num}{\cat{Num}}
+
+\begin{document}
+
+\title{Задания}
+\maketitle
+
+\begin{enumerate}
+
+\item Опишите в категории (пред)порядка следующие конструкции:
+\begin{enumerate}
+\item Терминальные объекты.
+\item Произведения объектов.
+\end{enumerate}
+
+\item Пусть в категории $\C$ существует терминальный объект 1.
+Докажите, что для любого объекта $A$ в $\C$ существует произведение $A \times 1$.
+
+\item Докажите, что любой морфизм из терминального объекта является мономорфизмом.
+
+\item Пусть в категории $\C$ существует терминальный объект 1 и некоторый морфизм $1 \to B$.
+Докажите, что любая проекция $\pi_1 : A \times B \to A$ является эпиморфизмом.
+
+\item Докажите, что в $\Ab$ существуют все произведения.
+
+\end{enumerate}
+
+Бонусные задания:
+
+\begin{enumerate}
+
+\item Докажите, что если в категории $\C_M$ существуют бинарные произведения и моноид $M$ нетривиален, то он бесконечен.
+
+\item Докажите, что если в категории $\C_M$ существуют бинарные произведения и моноид $M$ нетривиален, то для любого натурального $n > 1$ существует $x \in M$ такой, что $x \neq 1$ и $x^n = 1$.
+
+\item Приведите пример нетривиального моноида $M$ такого, что в категории $\C_M$ существует бинарные произведения.
+
+\end{enumerate}
+
+\end{document}

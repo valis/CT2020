@@ -1,0 +1,237 @@
+\documentclass{beamer}
+
+\usepackage[english,russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[all]{xy}
+\usepackage{ifthen}
+\usepackage{xargs}
+
+\usetheme{Szeged}
+% \usetheme{Montpellier}
+% \usetheme{Malmoe}
+% \usetheme{Berkeley}
+% \usetheme{Hannover}
+\usecolortheme{beaver}
+
+\newcommand{\newref}[4][]{
+\ifthenelse{\equal{#1}{}}{\newtheorem{h#2}[hthm]{#4}}{\newtheorem{h#2}{#4}[#1]}
+\expandafter\newcommand\csname r#2\endcsname[1]{#4~\ref{#2:##1}}
+\newenvironmentx{#2}[2][1=,2=]{
+\ifthenelse{\equal{##2}{}}{\begin{h#2}}{\begin{h#2}[##2]}
+\ifthenelse{\equal{##1}{}}{}{\label{#2:##1}}
+}{\end{h#2}}
+}
+
+\newref[section]{thm}{theorem}{Theorem}
+\newref{lem}{lemma}{Lemma}
+\newref{prop}{proposition}{Proposition}
+\newref{cor}{corollary}{Corollary}
+
+\theoremstyle{definition}
+\newref{defn}{definition}{Definition}
+
+\newcommand{\cat}[1]{\mathbf{#1}}
+\renewcommand{\C}{\cat{C}}
+\newcommand{\Set}{\cat{Set}}
+\newcommand{\Grp}{\cat{Grp}}
+\newcommand{\Ab}{\cat{Ab}}
+\newcommand{\Ring}{\cat{Ring}}
+\renewcommand{\Vec}{\cat{Vec}}
+\newcommand{\Hask}{\cat{Hask}}
+\newcommand{\Mat}{\cat{Mat}}
+\newcommand{\Num}{\cat{Num}}
+
+\AtBeginSection[]
+{
+\begin{frame}[c,plain,noframenumbering]
+\frametitle{План лекции}
+\tableofcontents[currentsection]
+\end{frame}
+}
+
+\makeatletter
+\defbeamertemplate*{footline}{my theme}{
+    \leavevmode
+}
+\makeatother
+
+\begin{document}
+
+\title{Теория категорий}
+\subtitle{Конструкции в категориях}
+\author{Валерий Исаев}
+\maketitle
+
+\section{Мономорфизмы и эпиморфизмы}
+
+\begin{frame}
+\frametitle{Мономорфизмы}
+\begin{itemize}
+\item В категории $\Set$ морфизм является изоморфизмом тогда и только тогда, когда он инъективен и сюръективен.
+\item Верно ли это в произвольной категории?
+\item Чтобы данный вопрос имел смысл, нам понадобится обощение понятия инъективных и сюръективных функций.
+\item Морфизм $f : X \to Y$ называется \emph{мономорфизмом}, если для любых стрелок $g, h : Z \to X$ равенство $f \circ g = f \circ h$ влечет $g = h$.
+\[ \xymatrix{ Z \ar@<-.5ex>[r]_h \ar@<.5ex>[r]^g & X \ar[r]^f & Y } \implies g = h \]
+\item Мономорфизмы в $\Set$ -- это в точности инъективные функции.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Мономорфизмы в алгебраических категориях}
+\begin{prop}
+В любой алгебраической категории ($\Grp$, $\Ab$, $\Ring$, \ldots) мономорфизмы -- это в точности инъективные функции.
+\end{prop}
+\begin{proof}
+Докажем для $\Grp$, для остальных можно доказать аналогично.
+Пусть $f : A \to B$ -- инъективный гомоморфизм групп, и $g,h : C \to A$ -- такие, что $f \circ g = f \circ h$.
+Так как $f$ -- мономорфизм множеств, то $g$ и $h$ равны как функции над множествами.
+Но отсюда следует, что они равны как гомоморфизмы групп.
+
+Наоборот, если $f$ -- мономорфизм, то пусть $a_1, a_2 \in A$ такие, что $f(a_1) = f(a_2)$.
+Тогда рассмотри пару гомоморфизмов $g_1, g_2 : \mathbb{Z} \to A$ таких, что $g_i(1) = a_i$.
+Так как $f \circ g_1 = f \circ g_2$, то $g_1 = g_2$.
+Следовательно $a_1 = g_1(1) = g_2(1) = a_2$.
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Эпиморфизмы}
+\begin{itemize}
+\item Морфизм $f : X \to Y$ называется \emph{епиморфизмом}, если
+\[ \xymatrix{ X \ar[r]^f & Y \ar@<-.5ex>[r]_h \ar@<.5ex>[r]^g & Z } \implies g = h \]
+\item Эпиморфизмы в $\Set$ -- это в точности сюръективные функции.
+\item Эпиморфизмы в категориях моноидов и колец не обязательно сюръективны.
+\item Примеры: $\mathbb{N} \hookrightarrow \mathbb{Z}$, $\mathbb{Z} \hookrightarrow \mathbb{Q}$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Эпиморфизмы в $\Set$}
+\begin{prop}
+Эпиморфизмы в $\Set$ -- это в точности сюръективные функции.
+\end{prop}
+\begin{proof}
+Пусть $f : A \to B$ -- сюръекция, и $g,h : B \to C$ -- такие, что $g \circ f = h \circ f$.
+Тогда для любого $b \in B$ существует $a \in A$ такой, что $f(a) = b$.
+Следовательно $g(b) = g(f(a)) = h(f(a)) = h(b)$.
+
+Наоборот, если $f : A \to B$ -- эпиморфизм, то пусть $g,h : B \to \{ 0, 1 \}$ -- такие, что $g$ всегда равно 1, а $h(b)$ равно 1 в точности когда существует $a \in A$ такой, что $f(a) = b$.
+Тогда $g \circ f = h \circ f$.
+Следовательно $g = h$.
+Следовательно для любого $b \in B$ верно, что $h(b) = g(b) = 1$, то есть существует $a \in A$ такой, что $f(a) = b$, то есть $f$ -- сюръекция.
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Расщепленные моно- и эпиморфизмы}
+\begin{itemize}
+\item Морфизм $f : A \to B$ называется \emph{расщепленным мономорфизмом}, если существует $g : B \to A$ такой, что $g \circ f = id_A$.
+\item Морфизм $g : B \to A$ называется \emph{расщепленным эпиморфизмом}, если существует $f : A \to B$ такой, что $g \circ f = id_A$.
+\item Любой расщепленный мономорфизм является мономорфизмом. Действительно, если $f \circ h_1 = f \circ h_2$, то $h_1 = g \circ f \circ h_1 = g \circ f \circ h_2 = h_2$.
+\item Любой расщепленный эпиморфизм является эпиморфизмом. Доказательство аналогично предыдущему.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Сбалансированные категории}
+\begin{itemize}
+\item Категория называется сбалансированной, если любой мономорфный и эпиморфный морфизм является изоморфизмом.
+\item Примеры сбалансированных категорий: $\Set$, $\Grp$, $\Ab$.
+\item Примеры несбалансированных категорий: категории моноидов и колец.
+\item Любой эпиморфный расщепленный мономорфизм является изоморфизмом.
+Действительно, если $f : A \to B$ и $g : B \to A$ такие, что $g \circ f = id_A$, то $f \circ g \circ f = id_B \circ f$.
+Следовательно $f \circ g = id_B$.
+\item Любой мономорфный расщепленный эпиморфизм является изоморфизмом. Доказательство аналогично предыдущему.
+\end{itemize}
+\end{frame}
+
+\section{Произведения}
+
+\begin{frame}
+\frametitle{Терминальные объекты}
+\begin{itemize}
+\item В категориях $\Set$ и $\Hask$ существует много похожих объектов: $\mathbb{Z}$ и $Integer$, $\{ * \}$ и $()$, $A \times B$ и $(a, b)$.
+\item Существует ли обобщение этих конструкций в произвольных катгеориях?
+\item Объект $A$ некоторой категории $\C$ называется \emph{терминальным}, если для любого объекта $B$ существует уникальная стрелка $B \to A$.
+\item Другими словами, $A$ является терминальным, если для любого $B$ множество $Hom_\C(B,A)$ одноэлементно.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Примеры терминальных объектов}
+\begin{itemize}
+\item В $\Set$ множество терминально тогда и только тогда, когда оно одноэлементно.
+\item В $\Grp$ группа терминальна тогда и только тогда, когда она одноэлементна.
+\item В $\Hask$ есть следующие терминальные объекты: $()$, $data\ Unit = Unit$.
+\item Утверждение строчкой выше не является верным :(
+\item В группоиде существует терминальный объект только если он тривиален.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Уникальность терминальных объектов}
+\begin{prop}
+Любые два терминальных объекта изоморфны.
+\end{prop}
+\begin{proof}
+Если $A$ и $B$ -- терминальные объекты, то существует пара стрелок $f : A \to B$ и $g : B \to A$.
+При этом по уникальности верно, что $g \circ f = id_A$ и $f \circ g = id_B$.
+\end{proof}
+
+Терминальный объект обычно обозначают $1$.
+Уникальный морфизм из $X$ в $1$ обычно обозначают $!_X : X \to 1$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Декартово произведение}
+\begin{itemize}
+\item Множество $B$ вместе с парой функций $\pi_i : B \to A_i$ является декартовым произведением множеств $A_1$ и $A_2$, если для любых $a_i \in A_i$ существует уникальный $b \in B$ такой, что $\pi_i(b) = a_i$.
+\item Объект $B$ вместе с парой отображений $\pi_i : B \to A_i$ называется декартовым произведением $A_1$ и $A_2$, если для любых $f_i : C \to A_i$ существует уникальная стрелка $h : C \to B$ такая, что $\pi_i \circ h = f_i$.
+\[ \xymatrix{     & C \ar[ld]_{f_1} \ar@{-->}[d]^h \ar[rd]^{f_2} & \\
+              A_1 & B \ar[l]^{\pi_1} \ar[r]_{\pi_2}              & A_2
+            } \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Уникальность декартова произведения}
+\begin{prop}
+Если ($B$, $\pi^B_i$) и ($C$, $\pi^C_i$) -- произведения объектов $A_1$ и $A_2$, то $B$ и $C$ изоморфны.
+\end{prop}
+\begin{proof}
+По определению декартова произведения существуют стрелки $g : B \to C$ и $h : C \to B$ как на диаграмме ниже.
+По уникальности $h \circ g = id_B$ и, аналогично, $g \circ h = id_C$.
+\[ \xymatrix{     & B \ar[ld]_{\pi^B_1} \ar@{-->}[d]^g \ar[rd]^{\pi^B_2} & \\
+              A_1 & C \ar[l]^{\pi^C_1} \ar@{-->}[d]^h \ar[r]_{\pi^C_2}   & A_2 \\
+                  & B \ar[lu]^{\pi^B_1} \ar[ru]_{\pi^B_2}                &
+            } \]
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Произведение множества объектов}
+\begin{itemize}
+\item Если $\{ A_i \}_{i \in I}$ -- колекция объектов некоторой категории, то объект $B$ вместе с морфизмами $\pi_i : B \to A_i$ называется декартовым произведением объектов $A_i$, если для любой коллекции морфизмов $\{ f_i : C \to A_i \}_{i \in I}$ существует уникальная стрелка $h : C \to B$ такая, что $\pi_i \circ h = f_i$.
+\item Декартово произведение объектов $\{ A_i \}_{i \in I}$ уникально с точностью до изоморфизма.
+\item Оно обозначается $\prod\limits_{i \in I} A_i$.
+Если $I = \{ 1, \ldots n \}$, то оно обозначается $A_1 \times \ldots \times A_n$.
+Уникальный морфизм $C \to A_1 \times \ldots \times A_n$ обозначается $\langle f_1, \ldots f_n \rangle$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Декартовы категория}
+Категория, в которой существует терминальный объект и бинарные произведения, называется \emph{декартовой}.
+
+\begin{prop}
+Категория декартова тогда и только тогда, когда в ней существуют все конечные произведения.
+\end{prop}
+\begin{proof}
+Терминальный объект -- произведение пустого множества объектов, бинарные произведения -- произведение двух объектов.
+И наоборот, произведение $A_i$ можно сконструировать как
+\[ A_1 \times (A_2 \times \ldots (A_{n-1} \times A_n) \ldots) \]
+Это можно доказать по индукции.
+\end{proof}
+\end{frame}
+
+\end{document}
