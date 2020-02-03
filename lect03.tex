@@ -1,0 +1,258 @@
+\documentclass{beamer}
+
+\usepackage[english,russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[all]{xy}
+\usepackage{ifthen}
+\usepackage{xargs}
+
+\usetheme{Szeged}
+% \usetheme{Montpellier}
+% \usetheme{Malmoe}
+% \usetheme{Berkeley}
+% \usetheme{Hannover}
+\usecolortheme{beaver}
+
+\newcommand{\newref}[4][]{
+\ifthenelse{\equal{#1}{}}{\newtheorem{h#2}[hthm]{#4}}{\newtheorem{h#2}{#4}[#1]}
+\expandafter\newcommand\csname r#2\endcsname[1]{#4~\ref{#2:##1}}
+\newenvironmentx{#2}[2][1=,2=]{
+\ifthenelse{\equal{##2}{}}{\begin{h#2}}{\begin{h#2}[##2]}
+\ifthenelse{\equal{##1}{}}{}{\label{#2:##1}}
+}{\end{h#2}}
+}
+
+\newref[section]{thm}{theorem}{Theorem}
+\newref{lem}{lemma}{Lemma}
+\newref{prop}{proposition}{Proposition}
+\newref{cor}{corollary}{Corollary}
+
+\theoremstyle{definition}
+\newref{defn}{definition}{Definition}
+
+\newcommand{\cat}[1]{\mathbf{#1}}
+\renewcommand{\C}{\cat{C}}
+\newcommand{\Set}{\cat{Set}}
+\newcommand{\Grp}{\cat{Grp}}
+\newcommand{\Ab}{\cat{Ab}}
+\newcommand{\Ring}{\cat{Ring}}
+\renewcommand{\Vec}{\cat{Vec}}
+\newcommand{\Hask}{\cat{Hask}}
+\newcommand{\Mat}{\cat{Mat}}
+\newcommand{\Num}{\cat{Num}}
+
+\newcommand{\im}{\mathrm{Im}}
+\newcommand{\bool}{\mathrm{Bool}}
+\newcommand{\true}{\mathrm{true}}
+\newcommand{\false}{\mathrm{false}}
+
+\newcommand{\pb}[1][dr]{\save*!/#1-1.2pc/#1:(-1,1)@^{|-}\restore}
+\newcommand{\po}[1][dr]{\save*!/#1+1.2pc/#1:(1,-1)@^{|-}\restore}
+
+\AtBeginSection[]
+{
+\begin{frame}[c,plain,noframenumbering]
+\frametitle{План лекции}
+\tableofcontents[currentsection]
+\end{frame}
+}
+
+\makeatletter
+\defbeamertemplate*{footline}{my theme}{
+    \leavevmode
+}
+\makeatother
+
+\begin{document}
+
+\title{Теория категорий}
+\subtitle{Пределы и копределы}
+\author{Валерий Исаев}
+\maketitle
+
+\section{Уравнители}
+
+\begin{frame}
+\frametitle{Уравнители в $\Set$}
+\begin{itemize}
+\item Часто новые множества конструируются из уже существующих как подмножества элементов, удовлетворяющих некоторому уравнению.
+\item Например, множество неотрицательных вещественных чисел $\mathbb{R}_{\geq 0}$ является подмножеством $\mathbb{R}$ таких $x$, что $|x| = x$.
+\item Другой пример: множество корней полинома $p$ является подмножеством $\mathbb{R}$ таких $x$, что $p(x) = 0$.
+\item В общем случае, если $f, g : A \to B$ -- пара функций, то \emph{уравнитель} этих функций -- это подмножество $A$ таких $x$, что $f(x) = g(x)$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Уравнители в произвольной категории}
+\emph{Уравнитель} пары морфизмов $f, g : A \to B$ -- это мономорфизм $e : E \to A$ такой, что $f \circ e = g \circ e$ и для любого $h : F \to A$ такого, что $f \circ h = g \circ h$, существует стрелка $k : F \to E$ такая, что $e \circ k = h$.
+\[ \xymatrix{ F \ar@{-->}[d]_{\exists k} \ar[dr]^h \\
+              E \ar@{^{(}->}[r]_e & A \ar@<-.5ex>[r]_g \ar@<.5ex>[r]^f & B
+            } \]
+
+Мономорфизм называется \emph{регулярным}, если он является уравнителем некоторой пары стрелок.
+\end{frame}
+
+\begin{frame}
+\frametitle{Другое определение уравнителей}
+\emph{Уравнитель} пары морфизмов $f, g : A \to B$ -- это морфизм $e : E \to A$ такой, что $f \circ e = g \circ e$ и для любого $h : F \to A$ такого, что $f \circ h = g \circ h$, существует уникальная стрелка $k : F \to E$ такая, что $e \circ k = h$.
+\[ \xymatrix{ F \ar@{-->}[d]_{\exists ! k} \ar[dr]^h \\
+              E \ar[r]_e & A \ar@<-.5ex>[r]_g \ar@<.5ex>[r]^f & B
+            } \]
+
+Упражнение: докажите, что эти определения эквивалентны.
+\end{frame}
+
+\begin{frame}
+\frametitle{Уравнители в категории $\Ab$}
+\begin{itemize}
+\item В категории $\Ab$ абелевых групп уравнители тесно связаны с понятием ядра морфизма.
+\item Если $f : A \to B$ -- морфизм абелевых групп, то ядро $f$ -- это уравнитель пары стрелок $f, 0 : A \to B$.
+\item И наоборот, если $f, g : A \to B$ -- пара морфизмов, то их уравнитель -- это ядро морфизма $f - g : A \to B$.
+\item Таким образом, в категории $\Ab$ существуют все уравнители.
+\end{itemize}
+\end{frame}
+
+\section{Пределы}
+
+\begin{frame}
+\frametitle{Конусы диграмм}
+\begin{itemize}
+\item Пусть $J = (V,E)$ -- некоторый граф, и $D$ -- диграмма формы $J$ в категории $\C$.
+\item \emph{Конус} диаграммы $D$ -- это объект $A$ вместе с коллекцией морфизмов $a_v : A \to D(v)$ для каждой $v \in V$, удовлетворяющие условию, что для любого $e \in E$ следующая диаграмма коммутирует
+\[ \xymatrix{ A \ar[d]_{a_{s(e)}} \ar[rd]^{a_{t(e)}} \\
+              D(s(e)) \ar[r]_{D(e)} & D(t(e))
+            } \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Определение пределов}
+\begin{itemize}
+\item \emph{Предел} диграммы $D$ -- это такой конус $A$, что для любого конуса $B$ существует уникальный морфизм $f : B \to A$, такой что для любой $v \in V$ следующая диаграмма коммутирует
+\[ \xymatrix{ B \ar[d]_{b_v} \ar[r]^f & A \ar[dl]^{a_v} \\
+              D(v)
+            } \]
+\item Предел $D$ обозначается $lim\ D$.
+\item Категория называется \emph{полной} (\emph{конечно полной}), если в ней существуют все малые (конечные) пределы.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Примеры пределов}
+\begin{itemize}
+\item Произведения -- это пределы дискретных диаграмм.
+\item Бинарные произведения -- это пределы диаграмм вида \[ \bullet \qquad \bullet \]
+\item Уравнители -- это пределы диаграмм вида
+\[ \xymatrix{ \bullet \ar@<-.5ex>[r] \ar@<.5ex>[r] & \bullet } \]
+\item Терминальные объекты -- это пределы пустой диаграммы.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Уникальность пределов}
+\begin{prop}
+Если $A$ и $B$ -- пределы диаграммы $D$, то существует изоморфизм $f : A \simeq B$, такой что $a_v = b_v \circ f$ для любой $v \in V$.
+\end{prop}
+\begin{proof}
+Так как $B$ -- предел, то существует стрелка $f : A \to B$, удовлетворяющая условию утверждения.
+Так как $A$ -- предел, то существует стрелка $g : B \to A$.
+По уникальности мы знаем, что $g \circ f = id_A$ и $f \circ g = id_B$, то есть $f$ -- изоморфизм.
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Пулбэки}
+\begin{itemize}
+\item \emph{Пулбэки} -- это пределы диаграмм вида
+\[ \xymatrix{                & \bullet \ar[d] \\
+              \bullet \ar[r] & \bullet
+            } \]
+\item Пулбэк можно изображать как коммутативный квадрат
+\[ \xymatrix{ A \times_C B \ar[d] \ar[r] \pb & B \ar[d] \\
+              A \ar[r]                       & C
+            } \]
+\item Пулбэк иногда называют декартовым квадратом.
+\item Стрелку $A \times_C B \to A$ называют пулбэком стрелки $B \to C$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Декартово произведение через пулбэки}
+\begin{prop}
+Если $1$ -- терминальный объект, то пулбэк $A \times_1 B$ является декартовым произведением $A \times B$.
+\end{prop}
+\begin{proof}
+Действительно, конус диаграммы $\quad A \qquad B \quad$ -- это тоже самое, что и конус диаграммы 
+\[ \xymatrix{          & B \ar[d] \\
+              A \ar[r] & 1
+            } \]
+Следовательно пределы этих диграмм также совпадают.
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Пулбэки в $\Set$}
+В $\Set$ пулбэк диаграммы
+\[ \xymatrix{          & B \ar[d]^g \\
+              A \ar[r]_f & C
+            } \]
+можно определить как подмножество декартова произведения $A \times B$.
+Действительно, если мы положим $A \times_C B = \{ (a, b)\ |\ f(a) = g(b) \}$, то легко видеть, что $A \times_C B$ является пулбэком диграммы выше.
+\end{frame}
+
+\begin{frame}
+\frametitle{Пулбэки через уравнители и произведения}
+\begin{prop}
+Если в категории существуют конечные произведения и уравнители, то в ней существуют пулбэки.
+\end{prop}
+\begin{proof}
+Пулбэки можно сконструировать так же, как и в $\Set$.
+Пусть $e : D \to A \times B$ -- уравнитель стрелок $f \circ \pi_1 : A \times B \to C$ и $g \circ \pi_2 : A \times B \to C$.
+Тогда легко видеть, что квадрат ниже является декартовым.
+\[ \xymatrix{ D \ar[d]_{\pi_1 \circ e} \ar[r]^{\pi_2 \circ e} & B \ar[d]^g \\
+              A \ar[r]_f                                      & C
+            } \]
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Пределы через уравнители и произведения}
+\begin{prop}
+Если в категории существуют конечные произведения и уравнители, то в ней существуют все конечные пределы.
+\end{prop}
+\begin{proof}
+Пусть $D$ -- диаграмма формы $(V,E)$. Тогда рассмотрим диаграмму, состоящую из пары стрелок
+\[ \langle \pi_{t(e)} \rangle_{e \in E}, \langle D(e) \circ \pi_{s(e)} \rangle_{e \in E} : \prod_{v \in V} D(v) \rightrightarrows \prod_{e \in E} D(t(e)) \]
+Конус этой диаграммы -- это тоже самое, что конус диаграммы $D$.
+Следовательно предел этой диаграммы также является пределом $D$.
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Прообраз подобъекта}
+\begin{itemize}
+\item Пусть $f : A \to C$ -- функция в $\Set$ и $B \subseteq C$.
+\item Тогда мы можем определить прообраз $f$: $f^{-1}(B) = \{ a \in A\ |\ f(a) \in B \} \subseteq A$.
+\item Как обобщить эту конструкцию на произвольную категорию?
+\item \emph{Прообраз} подобъекта $B \hookrightarrow C$ вдоль морфизма $f : A \to C$ -- это пулбэк
+\[ \xymatrix{ f^{-1}(B) \ar@{^{(}->}[d] \ar[r] \pb & B \ar@{^{(}->}[d] \\
+              A \ar[r]_f                           & C
+            } \]
+\item Упражнение: докажите, что $f^{-1}(B) \to A$ является мономорфизмом.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Пересечение подобъектов}
+\begin{itemize}
+\item Пусть $A$ и $B$ -- подмножества $C$.
+\item Тогда мы можем определить их пересечение $A \cap B$, которое является подмножеством и $A$, и $B$.
+\item Как обобщить эту конструкцию на произвольную категорию?
+\item \emph{Пересечение} подобъектов $A \hookrightarrow C$ и $B \hookrightarrow C$ -- это пулбэк
+\[ \xymatrix{ A \cap B \ar@{^{(}->}[d] \ar@{^{(}->}[r] \pb & B \ar@{^{(}->}[d] \\
+              A \ar@{^{(}->}[r]                             & C
+            } \]
+\end{itemize}
+\end{frame}
+
+\end{document}
