@@ -1,0 +1,94 @@
+\documentclass[draft]{article}
+\usepackage[russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{cmap}
+\usepackage{amsfonts}
+\usepackage[all]{xy}
+
+\newcommand{\cat}[1]{\mathbf{#1}}
+\renewcommand{\C}{\cat{C}}
+\newcommand{\Set}{\cat{Set}}
+\newcommand{\Grp}{\cat{Grp}}
+\newcommand{\Ab}{\cat{Ab}}
+\newcommand{\Vec}{\cat{Vec}}
+\newcommand{\Hask}{\cat{Hask}}
+\newcommand{\Mat}{\cat{Mat}}
+\newcommand{\Num}{\cat{Num}}
+
+\newcommand{\im}{\mathrm{Im}}
+\newcommand{\bool}{\mathrm{Bool}}
+\newcommand{\true}{\mathrm{true}}
+\newcommand{\false}{\mathrm{false}}
+\newcommand{\andb}{\mathrm{and}}
+\newcommand{\orb}{\mathrm{or}}
+
+\begin{document}
+
+\title{Задания}
+\maketitle
+
+\begin{enumerate}
+
+\item Опишите в категории (пред)порядка следующие конструкции:
+\begin{enumerate}
+\item Начальные объекты.
+\item Копроизведения объектов.
+\end{enumerate}
+
+\item Докажите, что если $A \amalg B$ существует, то $B \amalg A$ тоже существует и изоморфен $A \amalg B$.
+
+\item Начальный объект $0$ произвольной категории называется \emph{строгим}, если любой морфизм вида $X \to 0$ является изоморфизмом.
+Например, в $\Set$ пустое множество является строгим начальным объектом.
+В $\Grp$ тривиальная группа не является строгим начальным объектом, хоть и является начальным.
+
+Докажите, что в произвольной категории начальный объект $0$ является строгим тогда и только тогда, когда для любого $X$ произведение $X \times 0$ существует и $X \times 0 \simeq 0$.
+
+\item Докажите, что в $\Ab$ существуют все копроизведения.
+
+\item Приведите нетривиальный пример категории, в которой для всех $A$ и $B$ существуют сумма и произведение и $A \amalg B \simeq A \times B$.
+
+\item Идемпотентный морфизм $h : B \to B$ является расщепленным, если существуют $f : A \to B$ и $g : B \to A$ такие, что $g \circ f = id_A$ и $f \circ g = h$.
+Докажите, что если в категории существуют коуравнители, то любой идемпотентный морфизм расщеплен.
+
+\item При каких условиях в категории (пред)порядка существует булевский объект?
+
+\item Пусть в категории $\C$ есть все конечные произведения и булевский объект.
+Сконструируйте в $\C$ морфизмы $\andb, \orb : \bool \times \bool \to \bool$, такие что следующие диаграммы коммутируют
+\[ \xymatrix{ 1 \ar[d]_{\langle \true, \true \rangle} \ar[rd]^{\true} \\
+              \bool \times \bool \ar[r]_-{\andb} & \bool
+            }
+\qquad \xymatrix{ 1 \ar[d]_{\langle \true, \true \rangle} \ar[rd]^{\true} \\
+              \bool \times \bool \ar[r]_-{\orb} & \bool
+            } \]
+\[ \xymatrix{ 1 \ar[d]_{\langle \true, \false \rangle} \ar[rd]^{\false} \\
+              \bool \times \bool \ar[r]_-{\andb} & \bool
+            }
+\qquad \xymatrix{ 1 \ar[d]_{\langle \true, \false \rangle} \ar[rd]^{\true} \\
+              \bool \times \bool \ar[r]_-{\orb} & \bool
+            } \]
+\[ \xymatrix{ 1 \ar[d]_{\langle \false, \true \rangle} \ar[rd]^{\false} \\
+              \bool \times \bool \ar[r]_-{\andb} & \bool
+            }
+\qquad \xymatrix{ 1 \ar[d]_{\langle \false, \true \rangle} \ar[rd]^{\true} \\
+              \bool \times \bool \ar[r]_-{\orb} & \bool
+            } \]
+\[ \xymatrix{ 1 \ar[d]_{\langle \false, \false \rangle} \ar[rd]^{\false} \\
+              \bool \times \bool \ar[r]_-{\andb} & \bool
+            }
+\qquad \xymatrix{ 1 \ar[d]_{\langle \false, \false \rangle} \ar[rd]^{\false} \\
+              \bool \times \bool \ar[r]_-{\orb} & \bool
+            } \]
+
+\item Мы видели, что объекты $2$ и $1$ могут быть изоморфны. Если $2$ является булевским объектом, то это все равно может произойти, но эту ситуацию легко отследить.
+
+Пусть $\C$ -- категория с конечными произведениями.
+Докажите, что следующие утверждения эквивалентны:
+\begin{enumerate}
+\item $\C$ -- категория предпорядка.
+\item В $\C$ терминальный объект является булевским.
+\item В $\C$ существует булевский объект, такой что $\true = \false$.
+\end{enumerate}
+
+\end{enumerate}
+
+\end{document}

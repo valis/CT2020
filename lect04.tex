@@ -1,0 +1,235 @@
+\documentclass{beamer}
+
+\usepackage[english,russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[all]{xy}
+\usepackage{ifthen}
+\usepackage{xargs}
+
+\usetheme{Szeged}
+% \usetheme{Montpellier}
+% \usetheme{Malmoe}
+% \usetheme{Berkeley}
+% \usetheme{Hannover}
+\usecolortheme{beaver}
+
+\newcommand{\newref}[4][]{
+\ifthenelse{\equal{#1}{}}{\newtheorem{h#2}[hthm]{#4}}{\newtheorem{h#2}{#4}[#1]}
+\expandafter\newcommand\csname r#2\endcsname[1]{#4~\ref{#2:##1}}
+\newenvironmentx{#2}[2][1=,2=]{
+\ifthenelse{\equal{##2}{}}{\begin{h#2}}{\begin{h#2}[##2]}
+\ifthenelse{\equal{##1}{}}{}{\label{#2:##1}}
+}{\end{h#2}}
+}
+
+\newref[section]{thm}{theorem}{Theorem}
+\newref{lem}{lemma}{Lemma}
+\newref{prop}{proposition}{Proposition}
+\newref{cor}{corollary}{Corollary}
+
+\theoremstyle{definition}
+\newref{defn}{definition}{Definition}
+
+\newcommand{\cat}[1]{\mathbf{#1}}
+\renewcommand{\C}{\cat{C}}
+\newcommand{\Set}{\cat{Set}}
+\newcommand{\Grp}{\cat{Grp}}
+\newcommand{\Ab}{\cat{Ab}}
+\newcommand{\Ring}{\cat{Ring}}
+\renewcommand{\Vec}{\cat{Vec}}
+\newcommand{\Hask}{\cat{Hask}}
+\newcommand{\Mat}{\cat{Mat}}
+\newcommand{\Num}{\cat{Num}}
+
+\newcommand{\im}{\mathrm{Im}}
+\newcommand{\bool}{\mathrm{Bool}}
+\newcommand{\true}{\mathrm{true}}
+\newcommand{\false}{\mathrm{false}}
+
+\newcommand{\ev}{\mathrm{ev}}
+\newcommand{\zero}{\mathrm{zero}}
+\newcommand{\suc}{\mathrm{suc}}
+\newcommand{\fst}{\mathrm{fst}}
+\newcommand{\snd}{\mathrm{snd}}
+\newcommand{\unit}{\mathrm{unit}}
+
+\newcommand{\pb}[1][dr]{\save*!/#1-1.2pc/#1:(-1,1)@^{|-}\restore}
+\newcommand{\po}[1][dr]{\save*!/#1+1.2pc/#1:(1,-1)@^{|-}\restore}
+
+\AtBeginSection[]
+{
+\begin{frame}[c,plain,noframenumbering]
+\frametitle{План лекции}
+\tableofcontents[currentsection]
+\end{frame}
+}
+
+\makeatletter
+\defbeamertemplate*{footline}{my theme}{
+    \leavevmode
+}
+\makeatother
+
+\begin{document}
+
+\title{Теория категорий}
+\subtitle{Копределы}
+\author{Валерий Исаев}
+\maketitle
+
+\section{Копределы}
+
+\begin{frame}
+\frametitle{Дуальная категория}
+Пусть $\C$ -- произвольная категория, тогда \emph{дуальная} ей категория $\C^{op}$ -- это категория, определяемая следующим образом:
+\begin{itemize}
+\item Объекты $\C^{op}$ совпадают с объектами $\C$.
+\item Если $X$, $Y$ -- объекты $\C^{op}$, то $Hom_{\C^{op}}(X,Y)$ определяется как $Hom_\C(Y,X)$.
+\item Композиция и тождественные морфизмы определяются так же, как в $\C$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Дуальность}
+\begin{itemize}
+\item В теории категорий зачастую определения и утверждения можно \emph{дуализировать}, применив их в дуальной категории.
+\item Например, понятие эпиморфизма является дуальным к понятию мономорфизма.
+\[ f \text{ -- моно: } \xymatrix{ Z \ar@<-.5ex>[r]_h \ar@<.5ex>[r]^g & X \ar[r]^f & Y } \implies g = h \]
+\[ f \text{ -- эпи: } \xymatrix{ Z & X \ar@<-.5ex>[l]_g \ar@<.5ex>[l]^h & Y \ar[l]^f } \implies g = h \]
+\item Часто к дуальным понятиям прибавляют приставку \emph{ко}. Например, эпиморфизмы можно называть комономорфизмами (или мономорфизмы можно называть коэпиморфизмами).
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Копределы}
+\begin{itemize}
+\item Копределы -- это дуальное понятие к понятию пределов.
+\item \emph{Коконус} диаграммы $D$ -- это объект $A$ вместе с коллекцией морфизмов $a_v : D(v) \to A$ для каждой $v \in V$, удовлетворяющие условию, что для любого $e \in E$ следующая диаграмма коммутирует
+\[ \xymatrix{ D(s(e)) \ar[rd]_{a_{s(e)}} \ar[r]^{D(e)} & D(t(e)) \ar[d]^{a_{t(e)}} \\
+                                                       & A
+            } \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Определение копределов}
+\begin{itemize}
+\item \emph{Копредел} диграммы $D$ -- это такой коконус $A$, что для любого коконуса $B$ существует уникальный морфизм $f : A \to B$, такой что для любой $v \in V$ следующая диаграмма коммутирует
+\[ \xymatrix{ D(v) \ar[d]_{a_v} \ar[dr]^{b_v} \\
+              A \ar[r]_f & B
+            } \]
+\item Копредел $D$ обозначается $colim\ D$.
+\item Категория называется \emph{кополной} (\emph{конечно кополной}), если в ней существуют все малые (конечные) копределы.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Уникальность копределов}
+Дуализировать можно не только определения, но и утверждения.
+\begin{prop}
+Если $A$ и $B$ -- копределы диаграммы $D$, то существует изоморфизм $f : A \simeq B$, такой что $f \circ a_v = b_v$ для любой $v \in V$.
+\end{prop}
+\begin{proof}
+Так как копредел в $\C$ -- это предел в $\C^{op}$, то это утверждение эквивалентно аналогичному утверждению для пределов.
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Начальный объект}
+\begin{itemize}
+\item Объект называется \emph{начальным}, если он является копределом пустой диаграммы.
+\item В $\Set$ существует единственный начальный объект -- пустое множество.
+\item В $\Hask$ начальный объект -- пустой тип.
+\item В $\Grp$ начальный объект -- тривиальная группа.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Копроизведения объектов}
+\begin{itemize}
+\item \emph{Копроизведение} (\emph{сумма}) объектов $A_1$ и $A_2$ -- это копредел диаграммы $\quad A_1 \qquad A_2$. Копроизведение обозначается $A_1 \amalg A_2$ либо $A_1 + A_2$.
+\item В $\Set$ копроизведение -- это размеченное объединение множеств.
+\item В $\Hask$ копроизведение -- это $Either$.
+\item В $\Grp$ копроизведение -- свободное произведение.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Фактор-множества}
+\begin{itemize}
+\item Пусть $\sim$ -- отношение эквивалентности на множестве $B$.
+\item Тогда можно определить множество $B / \sim$ классов эквивалентности элементов $B$ по этому отношению.
+\item Существует каноническая функция $c : B \to B / \sim$, отправляющая каждый $b \in B$ в его класс эквивалентности.
+\item Если рассматривать отношение $\sim$ как подмножество $B \times B$, то существуют проекции $f, g : \sim \to B$.
+\item Стрелка $c$ уравнивает $f$ и $g$ и является универсальной с таким свойством.
+\item Другими словами, $c$ является коуравнителем $f$ и $g$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Коуравнители}
+\begin{itemize}
+\item В произвольной категории коуравнители можно рассматривать как обобщение этой конструкции.
+\item Пусть $B$ -- абелева группа, $A$ -- подгруппа $B$, $f : A \hookrightarrow B$ -- вложенние $A$ в $B$.
+Тогда коядро $B/A$ -- это коуравнитель стрелок $f,0 : A \to B$.
+\item И наоборот, коуравнитель стрелок $f,g : A \to B$ -- это коядро $B/\im(f-g)$.
+\item \emph{Пушауты} -- дуальное понятие к понятию пулбэков.
+\end{itemize}
+\end{frame}
+
+\section{Булевские объекты}
+
+\begin{frame}
+\frametitle{Копроизведение $1 \amalg 1$}
+\begin{itemize}
+\item В $\Set$ множество $\bool$ можно определить как копроизведение множеств $\{ \true \}$ и $\{ \false \}$, каждое из которых является терминальным.
+\item Копроизведение $1 \amalg 1$ обычно обозначается как $2$.
+\item Можно было бы в произвольной категории определить объект $\bool$ как копроизведение $1 \amalg 1$.
+\item Но это недостаточно сильное определение. Мы не сможем никаких функций над ним определить.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Булевский объект}
+\begin{itemize}
+\item Пусть в $\C$ существуют все конечные произведения.
+\item Тогда \emph{булевский объект} в $\C$ -- это объект $\bool$ вместе с парой морфизмов $\true, \false : 1 \to \bool$, удовлетворяющий следующему условию.
+\item Для любых $f, g : A \to B$ существует уникальная стрелка $h : \bool \times A \to B$, такая что
+\[ \xymatrix{ A \ar[rr]^-{\langle \true \circ !_A, id_A \rangle} \ar[drr]_{f} & & \bool \times A \ar[d]^h \\
+                                                                             & & B
+            }
+\qquad \xymatrix{ A \ar[rr]^-{\langle \false \circ !_A, id_A \rangle} \ar[drr]_{g} & & \bool \times A \ar[d]^h \\
+                                                                              & & B
+            }
+\]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Булевский объект и 2}
+\begin{itemize}
+\item Любой булевский объект является 2.
+\item Действительно, если в определении булевского объекта в качестве $A$ взять 1, то мы получим в точности универсальное свойство $1 \amalg 1$.
+\item Следовательно булевский объект уникален с точностью до изоморфизма.
+\item Но не любой объект, являющийся 2, является булевским.
+\item Действительно, в категории групп 2 изоморфен 1.
+\item Но булевский объект изоморфен 1 только в категориях предпорядка.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{if}
+\begin{itemize}
+\item Мы можем сконструировать морфизм $if : \bool \times (C \times C) \to C$, удовлетворяющий
+\[ \xymatrix{ C \times C \ar[d]_{\langle \true \circ !, id \rangle} \ar[rd]^{\pi_1} \\
+              \bool \times (C \times C) \ar[r]_-{if} & C
+            }
+\quad \xymatrix{ C \times C \ar[d]_{\langle \false \circ !, id \rangle} \ar[rd]^{\pi_2} \\
+              \bool \times (C \times C) \ar[r]_-{if} & C
+            } \]
+\item Действительно, в определении $\bool$ возьмем $A = C \times C$, $B = C$, $f = \pi_1$ и $g = \pi_2$.
+\item Тогда существует уникальная стрелка $\bool \times (C \times C) \to C$, удовлетворяющая условиям выше.
+\end{itemize}
+\end{frame}
+
+\end{document}
