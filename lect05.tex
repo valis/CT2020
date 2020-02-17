@@ -1,0 +1,150 @@
+\documentclass{beamer}
+
+\usepackage[english,russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[all]{xy}
+\usepackage{ifthen}
+\usepackage{xargs}
+
+\usetheme{Szeged}
+% \usetheme{Montpellier}
+% \usetheme{Malmoe}
+% \usetheme{Berkeley}
+% \usetheme{Hannover}
+\usecolortheme{beaver}
+
+\newcommand{\newref}[4][]{
+\ifthenelse{\equal{#1}{}}{\newtheorem{h#2}[hthm]{#4}}{\newtheorem{h#2}{#4}[#1]}
+\expandafter\newcommand\csname r#2\endcsname[1]{#4~\ref{#2:##1}}
+\newenvironmentx{#2}[2][1=,2=]{
+\ifthenelse{\equal{##2}{}}{\begin{h#2}}{\begin{h#2}[##2]}
+\ifthenelse{\equal{##1}{}}{}{\label{#2:##1}}
+}{\end{h#2}}
+}
+
+\newref[section]{thm}{theorem}{Theorem}
+\newref{lem}{lemma}{Lemma}
+\newref{prop}{proposition}{Proposition}
+\newref{cor}{corollary}{Corollary}
+
+\theoremstyle{definition}
+\newref{defn}{definition}{Definition}
+
+\newcommand{\cat}[1]{\mathbf{#1}}
+\renewcommand{\C}{\cat{C}}
+\newcommand{\D}{\cat{D}}
+\newcommand{\E}{\cat{E}}
+\newcommand{\Set}{\cat{Set}}
+\newcommand{\FinSet}{\cat{FinSet}}
+\newcommand{\Grp}{\cat{Grp}}
+\newcommand{\Ab}{\cat{Ab}}
+\newcommand{\Ring}{\cat{Ring}}
+\renewcommand{\Vec}{\cat{Vec}}
+\newcommand{\Hask}{\cat{Hask}}
+\newcommand{\Agda}{\cat{Agda}}
+\newcommand{\Mat}{\cat{Mat}}
+\newcommand{\Num}{\cat{Num}}
+
+\newcommand{\pb}[1][dr]{\save*!/#1-1.2pc/#1:(-1,1)@^{|-}\restore}
+\newcommand{\po}[1][dr]{\save*!/#1+1.2pc/#1:(1,-1)@^{|-}\restore}
+
+\AtBeginSection[]
+{
+\begin{frame}[c,plain,noframenumbering]
+\frametitle{План лекции}
+\tableofcontents[currentsection]
+\end{frame}
+}
+
+\makeatletter
+\defbeamertemplate*{footline}{my theme}{
+    \leavevmode
+}
+\makeatother
+
+\begin{document}
+
+\title{Теория категорий}
+\subtitle{Функторы}
+\author{Валерий Исаев}
+\maketitle
+
+\section{Определение}
+
+\begin{frame}
+\frametitle{Определение функторов}
+\begin{itemize}
+\item Функторы между категориями $\C$ и $\D$ -- это морфизмы категорий.
+\item Функтор $F$ состоит из функции $F : Ob(\C) \to Ob(\D)$ и функций $F : Hom_\C(X, Y) \to Hom_\D(F(X), F(Y))$ для всех $X, Y \in Ob(\C)$.
+\item Эти функции должны сохранять тождественные морфизмы и композиции:
+\[ F(id_X) = id_{F(X)} \]
+\[ F(g \circ f) = F(g) \circ F(f) \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Забывающие функторы}
+\begin{itemize}
+\item Забывающий функтор $\Grp \to \Set$, сопоставляющий каждой группе множество ее элементов.
+\item Для других алгебраических структур тоже существуют забывающие функторы $\Ring \to \Set$, $\Ab \to \Set$, и так далее.
+\item Можно задавать функторы, которые забывают не всю информацию.
+\item Например, существует два забывающих функтора $\Ring \to \Grp$ и $\Ring \to \Ab$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Примеры функторов}
+\begin{itemize}
+\item Функторы между категориями предпорядков -- это в точности монотонные функции.
+\item Если $M$ и $N$ -- пара моноидов, и $\C_M$ и $\C_N$ -- категории на одном объекте, соотетствующие этим моноидам, то функторы между $\C_M$ и $\C_N$ -- это в точности гомоморфизмы моноидов $M$ и $N$.
+\item Пусть $\C$ -- декартова категория и $A$ -- объект $\C$, тогда $A \times - : \C \to \C$ -- функтор, сопоставляющий каждому объекту $B$ объект $A \times B$ и каждому морфизму $f : B \to B'$ морфизм $id_A \times f : A \times B \to A \times B'$.
+\item Существует очевидный функтор $I : \Agda \to \Set$.
+\item Функторам в агде соответствуют функторы $\Agda \to \Agda$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Функторы и дуальность}
+\begin{itemize}
+\item Каждому функтору $F : \C \to \D$ можно сопоставить функтор $F^{op} : \C^{op} \to \D^{op}$.
+\item Другими словами существует биекция между множествами функторов $\C \to \D$ и $\C^{op} \to \D^{op}$.
+\item С другой стороны, функторы вида $\C^{op} \to \D$ никак не связаны с функторами вида $\C \to \D$.
+\item Первые называются контравариантными функторами, а вторые -- ковариантными.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Пределы и копределы функторов}
+\begin{itemize}
+\item Для любого функтора $F : \cat{J} \to \C$ можно определить понятие предела $lim\ F$ и копредела $colim\ F$. Определение такое же как и для диаграмм.
+\item Категории $\cat{J}$ можно рассматривать как обобщение графов, а функтор $F : \cat{J} \to \C$ -- как обощение диаграмм в $\C$.
+\item Любой диаграмме можно сопоставить функтор, и наоборот. (Эти конструкции не взаимообратные)
+\item Но пределы и копределы соответствующих диаграмм и функторов будут совпадать.
+\item Функторы $F : \cat{J} \to \C$ тоже называют диаграммами.
+\end{itemize}
+\end{frame}
+
+\section{Изоморфизм категорий}
+
+\begin{frame}
+\frametitle{Изоморфные категории}
+\begin{itemize}
+\item Для любой категории $\C$ существует тождественный функтор $Id_\C : \C \to \C$, отправляющий каждый объект и морфизм в себя.
+\item Если $F : \C \to \D$ и $G : \D \to \E$, то функтор $G \circ F : \C \to \E$ определяется на объектах и на морфизмах как композиция $F$ и $G$.
+\item Композиция функторов -- ассоциативна, тождественный функтор является единицей для композиции.
+\item Функтор $F : \C \to \D$ называется \emph{изоморфизмом} категорий, если существует функтор $G : \D \to \C$ такой, что $G \circ F = Id_\C$ и $F \circ G = Id_\D$.
+\item Категории $\C$ и $\D$ \emph{изоморфны}, если существует изоморфизм $F : \C \to \D$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Злые понятия}
+\begin{itemize}
+\item Как правило, имея две группы, не имеет смысла спрашивать равны ли они; нужно спрашивать об их изоморфности.
+\item Это верно для объектов в любой категории.
+\item Любое понятие, которое говорит о равенстве объектов некоторой категории, называют \emph{злым}.
+\item Изоморфизм категорий -- злое понятие.
+\end{itemize}
+\end{frame}
+
+\end{document}

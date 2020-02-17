@@ -1,0 +1,102 @@
+\documentclass[draft]{article}
+\usepackage[russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{cmap}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage[all]{xy}
+\usepackage{bussproofs}
+
+\newcommand{\cat}[1]{\mathbf{#1}}
+\renewcommand{\C}{\cat{C}}
+\newcommand{\Set}{\cat{Set}}
+\newcommand{\Grp}{\cat{Grp}}
+\newcommand{\Ab}{\cat{Ab}}
+\newcommand{\Hask}{\cat{Hask}}
+\newcommand{\Mat}{\cat{Mat}}
+\newcommand{\Num}{\cat{Num}}
+
+\newcommand{\im}{\mathrm{Im}}
+\newcommand{\bool}{\mathrm{Bool}}
+\newcommand{\true}{\mathrm{true}}
+\newcommand{\false}{\mathrm{false}}
+\newcommand{\andb}{\mathrm{and}}
+\newcommand{\orb}{\mathrm{or}}
+\newcommand{\inj}{\mathrm{inj}}
+
+\newcommand{\ev}{\mathrm{ev}}
+\newcommand{\zero}{\mathrm{zero}}
+\newcommand{\suc}{\mathrm{suc}}
+\newcommand{\rec}{\mathrm{rec}}
+
+\begin{document}
+
+\title{Задания}
+\maketitle
+
+\begin{enumerate}
+
+\item Приведите пример нетривиальной категории порядка, являющейся декартово замкнутой.
+
+\item Давайте докажем, что категории моноидов, групп и абелевых групп не являются декартово замкнутыми.
+\begin{enumerate}
+\item Докажите, что если в декартово замкнутой категории есть начальный объект, то он строгий.
+\item Объект называется \emph{нулевым}, если он одновременно начальный и терминальный.
+Докажите, что если в категории есть нулевой объект и начальный объект строгий, то эта категория тривиальна (то есть в ней между любой парой объектов существует уникальная стрелка).
+\item Докажите, что в категориях, упомянутых в задании, есть нулевой объект и сделайте вывод, что они не декартово замкнуты.
+\end{enumerate}
+
+\item Докажите, что в любой декартово замкнутой категории $\C$ выполнены следующие утверждения:
+\begin{enumerate}
+\item Для любого объекта $A$ существует изоморфизм $A^1 \simeq A$.
+\item Для любых объектов $A$, $B$ и $C$ существует изоморфизм $A^{B \times C} \simeq (A^B)^C$.
+\item Умножение дистрибутивно над сложением, то есть для любых объектов $A$, $B$ и $C$ морфизм
+\[ [\langle \pi_1, \inj_1 \circ \pi_2 \rangle, \langle \pi_1, \inj_2 \circ \pi_2 \rangle ] : (A \times B) \amalg (A \times C) \to A \times (B \amalg C) \]
+является изоморфизмом, где $\inj_1 : B \to B \amalg C$ и $\inj_2 : C \to B \amalg C$ -- канонические морфизмы копроизведения, и
+если $f : B \to X$, $g : C \to X$, то $[f,g] : B \amalg C \to X$ -- уникальный морфизм, удовлетворяющий $[f,g] \circ \inj_1 = f$ и $[f,g] \circ \inj_2$.
+\item Если в $\C$ существует начальный объект 0, то для любого объекта $A$ существует изоморфизм $A^0 \simeq 1$.
+\item Если в $\C$ существует копроизведение $B \amalg C$, то для любого объекта $A$ существует изоморфизм $A^{B \amalg C} \simeq A^B \times A^C$.
+\end{enumerate}
+
+\item Докажите, что в декартово замкнутой категории объект $2$ всегда является булевским.
+
+\item Определите в произвольной декартово замкнутой категории комбинаторы $K$ и $S$, то есть следующие морфизмы:
+\begin{align*}
+K & : A \to A^B \\
+S & : (C^B)^A \to (C^A)^{(B^A)}
+\end{align*}
+
+\item Одна из аксиом арифметики Пеано говорит, что функция $\suc$ должна быть инъективной.
+Докажите, что в любой декартово замкнутой категории с объектом натуральных чисел морфизм $\suc$ является расщепленным мономорфизмом.
+
+\item Одна из аксиом арифметики Пеано говорит, что ни для какого $x$ не верно, что $\zero = \suc(x)$.
+В произвольной декартово замкнутой категории это может быть верно, но только если она является категорией предпорядка.
+Докажите, что следующие утверждения эквивалентны.
+\begin{enumerate}
+\item $\C$ -- категория предпорядка.
+\item В $\C$ терминальный объект является объектом натуральных чисел.
+\item В $\C$ существует объект натуральных чисел, такой что для любого $x : 1 \to \mathbb{N}$ верно, что $\zero = \suc \circ x$.
+\item В $\C$ существует объект натуральных чисел, такой что для некоторого $x : 1 \to \mathbb{N}$ верно, что $\zero = \suc \circ x$.
+\end{enumerate}
+
+\item Докажите, что если в декартово замкнутой категории существует все копроизведения, то в ней существует объект натуральных чисел.
+
+\item Определите в произвольной декартово замкнутой категории с объектом натуральных чисел морфизм сложения $+ : \mathbb{N} \times \mathbb{N} \to \mathbb{N}$, удовлетворяющий следующим условиям:
+\[ \xymatrix{ \mathbb{N} \ar[d]_{\langle \zero \circ !_\mathbb{N}, id_\mathbb{N} \rangle} \ar[rd]^{id_\mathbb{N}} \\
+              \mathbb{N} \times \mathbb{N} \ar[r]_-{+} & \mathbb{N}
+            }
+\qquad
+   \xymatrix{ \mathbb{N} \times \mathbb{N} \ar[r]^-{+} \ar[d]_{\suc \times id_\mathbb{N}} & \mathbb{N} \ar[d]^{\suc} \\
+              \mathbb{N} \times \mathbb{N} \ar[r]_-{+} & \mathbb{N}
+            } \]
+Докажите, что сложение коммутативно и ассоциативно, то есть, что коммутируют следующие диаграммы:
+\[ \xymatrix{ \mathbb{N} \times \mathbb{N} \ar[r]^{\langle \pi_2, \pi_1 \rangle} \ar[rd]_{+} & \mathbb{N} \times \mathbb{N} \ar[d]^{+} \\
+                                                                           & \mathbb{N} \times \mathbb{N}
+            } \]
+\[ \xymatrix{ (\mathbb{N} \times \mathbb{N}) \times \mathbb{N} \ar[r]^{\simeq} \ar[d]_{+ \times id_\mathbb{N}} & \mathbb{N} \times (\mathbb{N} \times \mathbb{N}) \ar[r]^-{id_\mathbb{N} \times +} & \mathbb{N} \times \mathbb{N} \ar[d]^{+} \\
+              \mathbb{N} \times \mathbb{N} \ar[rr]_{+} & & \mathbb{N}
+            } \]
+
+\end{enumerate}
+
+\end{document}

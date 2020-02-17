@@ -1,0 +1,150 @@
+\documentclass{beamer}
+
+\usepackage[english,russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[all]{xy}
+\usepackage{ifthen}
+\usepackage{xargs}
+
+\usetheme{Szeged}
+% \usetheme{Montpellier}
+% \usetheme{Malmoe}
+% \usetheme{Berkeley}
+% \usetheme{Hannover}
+\usecolortheme{beaver}
+
+\newcommand{\newref}[4][]{
+\ifthenelse{\equal{#1}{}}{\newtheorem{h#2}[hthm]{#4}}{\newtheorem{h#2}{#4}[#1]}
+\expandafter\newcommand\csname r#2\endcsname[1]{#4~\ref{#2:##1}}
+\newenvironmentx{#2}[2][1=,2=]{
+\ifthenelse{\equal{##2}{}}{\begin{h#2}}{\begin{h#2}[##2]}
+\ifthenelse{\equal{##1}{}}{}{\label{#2:##1}}
+}{\end{h#2}}
+}
+
+\newref[section]{thm}{theorem}{Theorem}
+\newref{lem}{lemma}{Lemma}
+\newref{prop}{proposition}{Proposition}
+\newref{cor}{corollary}{Corollary}
+
+\theoremstyle{definition}
+\newref{defn}{definition}{Definition}
+
+\newcommand{\cat}[1]{\mathbf{#1}}
+\renewcommand{\C}{\cat{C}}
+\newcommand{\Set}{\cat{Set}}
+\newcommand{\Grp}{\cat{Grp}}
+\newcommand{\Ab}{\cat{Ab}}
+\newcommand{\Ring}{\cat{Ring}}
+\renewcommand{\Vec}{\cat{Vec}}
+\newcommand{\Hask}{\cat{Hask}}
+\newcommand{\Mat}{\cat{Mat}}
+\newcommand{\Num}{\cat{Num}}
+
+\newcommand{\im}{\mathrm{Im}}
+\newcommand{\bool}{\mathrm{Bool}}
+\newcommand{\true}{\mathrm{true}}
+\newcommand{\false}{\mathrm{false}}
+
+\newcommand{\ev}{\mathrm{ev}}
+\newcommand{\zero}{\mathrm{zero}}
+\newcommand{\suc}{\mathrm{suc}}
+\newcommand{\fst}{\mathrm{fst}}
+\newcommand{\snd}{\mathrm{snd}}
+\newcommand{\unit}{\mathrm{unit}}
+
+\newcommand{\pb}[1][dr]{\save*!/#1-1.2pc/#1:(-1,1)@^{|-}\restore}
+\newcommand{\po}[1][dr]{\save*!/#1+1.2pc/#1:(1,-1)@^{|-}\restore}
+
+\AtBeginSection[]
+{
+\begin{frame}[c,plain,noframenumbering]
+\frametitle{План лекции}
+\tableofcontents[currentsection]
+\end{frame}
+}
+
+\makeatletter
+\defbeamertemplate*{footline}{my theme}{
+    \leavevmode
+}
+\makeatother
+
+\begin{document}
+
+\title{Теория категорий}
+\subtitle{Декартово замкнутые категории}
+\author{Валерий Исаев}
+\maketitle
+
+\begin{frame}
+\frametitle{Мотивация}
+\begin{itemize}
+\item Очередная конструкция, которую мы хотим обобщить, -- это множество/тип функций.
+\item Эта конструкция называется по разному: экспонента, внутренний $Hom$.
+\item Пусть $A$ и $B$ -- объекты декартовой категории $\C$. Тогда экспонента обозначаются либо $B^A$, либо $[A,B]$.
+\item Какие операции должны быть определены для $B^A$.
+\item Как минимум мы должны иметь аппликацию, которая обычно обозначается $\ev$ и является следующим морфизмом:
+\[ \ev : B^A \times A \to B \]
+\item Морфизм $\ev$ позволяет нам ``вычислять'' элементы $B^A$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Элементы объекта (a side note)}
+\begin{itemize}
+\item В категории $\Set$ элементы множества $X$ соответствуют морфизмам из термнального объекта в $X$.
+\item В произвольной категории (с терминальным объектом) мы можем определить элемент объекта таким же образом.
+\item Но это не очень полезное определение, так как в произвольной категории объект не определяется своими элементами.
+\item Например, в категории графов морфизмы из терминального графа в граф $X$ соответствуют петлям $X$.
+\item Мы можем определить \emph{обощенный элемент} объекта $X$ как морфизм из произвольного объекта $\Gamma$ в $X$.
+\item В категории графов вершины и ребра графа $X$ являются его обобщенными элементами (конечно, существует и много других обобщенных элементов этого графа).
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Определение}
+\begin{itemize}
+\item Благодаря морфизму $\ev$, мы можем думать об элементах $B^A$ как о морфизмах $A \to B$.
+Мы еще должны сказать, что $B^A$ содержит \emph{все} такие морфизмы.
+\item То есть мы должны сказать чему соответствуют обобщенные элементы $B^A$.
+Ясно, что у нас должна быть биекция между обобщенными элементами $\Gamma \to B^A$ и морфизмами $\Gamma \times A \to B$.
+\item Имея морфизм $f : \Gamma \to B^A$, мы можем построить его каррирование следующим образом:
+\[ \Gamma \times A \xrightarrow{f \times id_A} B^A \times A \xrightarrow{\ev} B\]
+\item Объект $B^A$ вместе с морфизмом $\ev : B^A \times A \to B$ называется \emph{экспонентой} $A$ и $B$,
+если для любого $g : \Gamma \times A \to B$ существует уникальный $f : \Gamma \to B^A$ такой, что композиция стрелок в диаграмме выше равна $g$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Примеры}
+\begin{itemize}
+\item Категория называется \emph{декартово замкнутой}, если она декартова и для любых ее объектов $A$ и $B$ существует их экспонента $B^A$.
+\item $\Set$ -- декартово замкнута. Действительно, $B^A$ -- это просто множество функций из $A$ в $B$.
+\item $\Hask$ -- декартово замкнута. Действительно, $B^A$ -- это просто тип функций из $A$ в $B$.
+\item Все алгебраические категории, которые мы рассматривали, не являются декартово замкнутыми ($\Grp$, $\Vec$, $\Ring$, и т.д.).
+\item Категория графов -- декартово замнута.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Объект натуральных чисел}
+\begin{defn}
+\emph{Объект натуральных чисел} в декартово замкнутой категории -- это объект $\mathbb{N}$ вместе с парой морфизмов $\zero : 1 \to \mathbb{N}$ и $\suc : \mathbb{N} \to \mathbb{N}$, удовлетворяющие условию, что
+для любых других морфизмов $z : 1 \to X$ и $s : X \to X$ существует уникальная стрелка $h$, такая что диаграмма ниже коммутирует.
+\[ \xymatrix{ 1 \ar[r]^\zero \ar[rd]_z  & \mathbb{N} \ar[r]^\suc \ar@{-->}[d]^h & \mathbb{N} \ar@{-->}[d]^h \\
+                                        & X \ar[r]_s                            & X
+            } \]
+\end{defn}
+\end{frame}
+
+\begin{frame}
+\frametitle{Свойства}
+\begin{itemize}
+\item Объект натуральных чисел уникален с точностью до изоморфизма.
+\item В любой декартово замкнутой категории с объектом натуральных чисел можно определить все примитивно рекурсивные функции.
+\item Морфизм $\suc : \mathbb{N} \to \mathbb{N}$ является расщепленным мономорфизмом.
+\end{itemize}
+\end{frame}
+
+\end{document}

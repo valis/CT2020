@@ -1,0 +1,51 @@
+\documentclass[draft]{article}
+\usepackage[russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{cmap}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage[all]{xy}
+
+\newcommand{\cat}[1]{\mathbf{#1}}
+\renewcommand{\C}{\cat{C}}
+\newcommand{\D}{\cat{D}}
+\newcommand{\Set}{\cat{Set}}
+\newcommand{\FinSet}{\cat{FinSet}}
+\newcommand{\Grp}{\cat{Grp}}
+\newcommand{\Ab}{\cat{Ab}}
+\newcommand{\Hask}{\cat{Hask}}
+\newcommand{\Mat}{\cat{Mat}}
+\newcommand{\Num}{\cat{Num}}
+
+\begin{document}
+
+\title{Задания}
+\maketitle
+
+\begin{enumerate}
+
+\item Пусть $F : \C \to \D$ -- некоторый функтор.
+Какие из следующих утверждений верны?
+Как изменится ответ, если предположить, что $F$ -- эквивалентность категорий?
+\begin{enumerate}
+\item Если $f : X \to Y$ -- мономорфизм в $\C$. то $F(f)$ -- мономорфизм в $\D$.
+\item Если $X$ -- (ко)предел диаграммы $D : \cat{J} \to \C$, то $F(X)$ -- (ко)предел диграммы $F \circ D : \cat{J} \to \D$.
+\end{enumerate}
+
+\item Пусть $\cat{Cat}$ -- категория малых категорий.
+Ее объекты -- это малые категории.
+Морфизмы в категории $\cat{Cat}$ -- это функторы между категориями.
+
+Пусть $\cat{Graph}$ -- категория графов.
+Ее объекты -- графы, то есть пары $(V,E)$, состоящие из множества вершин $V$ и функции $E$, сопоставляющей каждой паре вершин $x,y \in V$ множество $E(x,y)$ ребер из $x$ в $y$.
+
+Морфизм графов $(V,E)$ и $(U,D)$ состоит из функции $f : V \to U$ и функции $f : E(x,y) \to D(f(x), f(y))$ для всех $x,y \in V$.
+Композиция и тождественные морфизмы определены очевидным образом.
+
+Определите забывающий функтор из $\cat{Cat}$ в $\cat{Graph}$.
+Докажите, что этот функтор строгий.
+
+\end{enumerate}
+
+\end{document}
