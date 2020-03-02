@@ -1,0 +1,239 @@
+\documentclass{beamer}
+
+\usepackage[english,russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[all]{xy}
+\usepackage{ifthen}
+\usepackage{xargs}
+
+\usetheme{Szeged}
+% \usetheme{Montpellier}
+% \usetheme{Malmoe}
+% \usetheme{Berkeley}
+% \usetheme{Hannover}
+\usecolortheme{beaver}
+
+\newcommand{\newref}[4][]{
+\ifthenelse{\equal{#1}{}}{\newtheorem{h#2}[hthm]{#4}}{\newtheorem{h#2}{#4}[#1]}
+\expandafter\newcommand\csname r#2\endcsname[1]{#4~\ref{#2:##1}}
+\newenvironmentx{#2}[2][1=,2=]{
+\ifthenelse{\equal{##2}{}}{\begin{h#2}}{\begin{h#2}[##2]}
+\ifthenelse{\equal{##1}{}}{}{\label{#2:##1}}
+}{\end{h#2}}
+}
+
+\newref[section]{thm}{theorem}{Theorem}
+\newref{lem}{lemma}{Lemma}
+\newref{prop}{proposition}{Proposition}
+\newref{cor}{corollary}{Corollary}
+
+\theoremstyle{definition}
+\newref{defn}{definition}{Definition}
+
+\newcommand{\cat}[1]{\mathbf{#1}}
+\renewcommand{\C}{\cat{C}}
+\newcommand{\D}{\cat{D}}
+\newcommand{\E}{\cat{E}}
+\newcommand{\Set}{\cat{Set}}
+\newcommand{\Agda}{\cat{Agda}}
+\newcommand{\FinSet}{\cat{FinSet}}
+\newcommand{\Grp}{\cat{Grp}}
+\newcommand{\Mon}{\cat{Mon}}
+\newcommand{\CMon}{\cat{CMon}}
+\newcommand{\Ab}{\cat{Ab}}
+\newcommand{\Ring}{\cat{Ring}}
+\renewcommand{\Vec}{\cat{Vec}}
+\newcommand{\Hask}{\cat{Hask}}
+\newcommand{\Mat}{\cat{Mat}}
+\newcommand{\Num}{\cat{Num}}
+
+\newcommand{\pb}[1][dr]{\save*!/#1-1.2pc/#1:(-1,1)@^{|-}\restore}
+\newcommand{\po}[1][dr]{\save*!/#1+1.2pc/#1:(1,-1)@^{|-}\restore}
+
+\AtBeginSection[]
+{
+\begin{frame}[c,plain,noframenumbering]
+\frametitle{План лекции}
+\tableofcontents[currentsection]
+\end{frame}
+}
+
+\makeatletter
+\defbeamertemplate*{footline}{my theme}{
+    \leavevmode
+}
+\makeatother
+
+\begin{document}
+
+\title{Теория категорий}
+\subtitle{Естественные преобразования}
+\author{Валерий Исаев}
+\maketitle
+
+\section{Подкатегории}
+
+\begin{frame}
+\frametitle{Подкатегории}
+\begin{itemize}
+\item \emph{Подкатегория} $\C'$ категории $\C$ -- это подкласс объектов $\C$ и для каждой пары объектов $X,Y$ в $\C'$ подкласс множества $Hom_\C(X,Y)$ такие, что $\C'$ содержит тождественные морфизмы для любого $X \in \C'$ и замкнут относительно композиции.
+\item Функтор $F : \C \to \D$ называется \emph{строгим} (\emph{faithful}), если для любых $X,Y \in Ob(\C)$ функция $F : Hom_\C(X,Y) \to Hom_\D(F(X),F(Y))$ инъективна.
+\item Подкатегории категории $\C$ -- классы эквивалентности строгих инъективных на объектах функторов.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Полные подкатегории}
+\begin{itemize}
+\item Подкатегория $\C$' категории $\C$ называется \emph{полной}, если для любых объектов $X,Y$ в $\C'$ множества $Hom_{\C'}(X,Y)$ и $Hom_\C(X,Y)$ равны.
+\item Функтор $F : \C \to \D$ называется \emph{полным}, если для любых $X,Y \in Ob(\C)$ функция $F : Hom_\C(X,Y) \to Hom_\D(F(X),F(Y))$ сюръективна.
+\item Полные подкатегории категории $\C$ -- классы эквивалентности полных строгих функторов.
+\item Полные строгие функторы мы будем называть \emph{вложениями} категорий.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Примеры}
+\begin{itemize}
+\item $\FinSet$ -- полная подкатегория $\Set$.
+\item $\Ab$ -- полная подкатегория $\Grp$.
+\item Категория частичных порядков -- полная подкатегория предпорядков.
+\item Категория предпорядков вкладывается в категорию категорий.
+\item Категория моноидов вкладывается в категорию категорий.
+\item Существует не полное вложение $\Agda$ в $\Set$.
+\item Все забывающий функторы, которые мы рассматривали, являются строгими.
+\item Обратное тоже верно: любой строгий функтор является в некотором смысле забывающим.
+\end{itemize}
+\end{frame}
+
+\section{Естественные преобразования}
+
+\begin{frame}
+\frametitle{Определение}
+\begin{itemize}
+\item Можно определить понятие морфизма между функторами $F, G : \C \to \D$.
+\item \emph{Естественное преобразование} $\alpha : F \to G$ -- это функция, сопоставляющая каждому объекту $X$ из $\C$ морфизм $\alpha_X : F(X) \to G(X)$, удовлетворяющая условию, что для любого морфизма $f : X \to Y$ в $\C$ следующий квадрат коммутирует:
+\[ \xymatrix{ F(X) \ar[r]^{\alpha_X} \ar[d]_{F(f)} & G(X) \ar[d]^{G(f)} \\
+              F(Y) \ar[r]_{\alpha_Y}               & G(Y)
+            } \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Категория функторов}
+\begin{itemize}
+\item Естественных преобразование отображает только объекты, но можно показать, что оно задает действие и на морфизмах.
+\item Если $\alpha : F \to G$ -- естественное преобразование, то каждому морфизму $f : X \to Y$ в $\C$ можно сопоставить морфизм $\alpha_f : F(X) \to G(Y)$ в $\D$.
+\item Морфизм $\alpha_f$ определяется как композиция $F(f) \circ \alpha_Y$, что равно $\alpha_X \circ G(f)$ по естественности.
+\item Этот морфизм -- это диагональ в коммутативном квадрате, который появляется в определении естественности.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Композиция естественных преобразований}
+\begin{itemize}
+\item Если $\alpha : F \to G$ и $\beta : G \to H$ -- пара естественных преобразований, то можно определить их композицию $\beta \circ \alpha : F \to H$ как функцию, сопоставляющую каждому $X$ из $\C$ морфизм $\beta_X \circ \alpha_X : F(X) \to H(X)$.
+\item Композиция $\beta \circ \alpha$ -- естественна:
+\[ \xymatrix{ F(X) \ar[r]^{\alpha_X} \ar[d]_{F(f)} & G(X) \ar[d]^{G(f)} \ar[r]^{\beta_X} & H(X) \ar[d]^{H(f)} \\
+              F(Y) \ar[r]_{\alpha_Y}               & G(Y) \ar[r]_{\beta_Y}               & H(Y)
+            } \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Категория функторов}
+\begin{itemize}
+\item Для любого функтора $F : \C \to \D$ существует тождественное естественное преобразование, сопоставляющее каждому $X$ тождественный морфизм $id_{F(X)} : F(X) \to F(X)$.
+\item Композиция -- ассоциативна, тождественное преобразование является единицей для композиции.
+\item Таким образом, для любой пары категорий $\C$ и $\D$ существует категория функторов, которая обозначается $\D^\C$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Эквивалентность категорий}
+\begin{itemize}
+\item Функтор $F : \C \to \D$ называются \emph{эквивалентностью} категорий, если существует функтор $G : \D \to \C$, такой что $G \circ F$ изоморфен $Id_\C$ в категории $\C^\C$, и $F \circ G$ изоморфен $Id_\D$ в категории $\D^\D$.
+\item Категории $\C$ и $\D$ называются \emph{эквивалентными}, если существует эквивалентность $F : \C \to \D$.
+\item Чтобы убедиться, что функтор является эквивалентностью, нужно проверять много условий.
+\item Функтор $F : \C \to \D$ является эквивалентностью, если он полный, строгий и \emph{существенно сюръективен на объектах}.
+\item Последнее условие означает, что для любого объекта $X$ в $\D$ существует объект $Y$ в $\C$, такой что $F(Y)$ изоморфен $X$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Пример}
+\begin{itemize}
+\item Определим функтор $F : \Mat \to \Vec$, такой что $F(n) = \mathbb{R}^n$ и $F(A)(v) = A \cdot v$.
+\item Из линейной алгебры мы знаем, что между линейными операторами и матрицами есть биекция, которая описывается указаным выше способом.
+\item Таким образом, этот функтор полный и строгий.
+\item Из линейной алгебры мы знаем, что любое конечномерное векторное пространство $V$ изоморфно пространству $\mathbb{R}^{dim(V)}$.
+\item Таким образом, $F$ -- существенно сюръективен на объектах, и, следовательно, является эквивалентностью.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Доказательство}
+\begin{prop}
+Функтор является эквивалентностью тогда и только тогда, когда он полный, строгий и существенно сюръективен на объектах.
+\end{prop}
+\begin{proof}
+Пусть $F : \C \to \D$ -- эквивалентность категорий.
+Пусть $G : \D \to \C$ -- обратный к нему, $\alpha : G \circ F \simeq Id_\C$ и $\beta : F \circ G \simeq Id_\D$.
+
+Тогда $F$ -- существенно сюръективен на объектах.
+Действительно, для любого $X \in Ob(\D)$ возьмём $Y = G(X)$, тогда $\beta_X : F(G(X)) \simeq X$.
+
+Покажем, что $F$ -- строгий.
+Пусть $F(f) = F(f')$ для некоторых $f,f' : X \to Y$.
+Тогда по естественности $\alpha$ получается, что $f = \alpha_Y \circ G(F(f)) \circ \alpha^{-1}_X = \alpha_Y \circ G(F(f')) \circ \alpha^{-1}_X = f'$.
+Аналогично доказывается, что $G$ -- строгий.
+\end{proof}
+\end{frame}
+
+\begin{frame}
+\frametitle{Доказательство (продолжение)}
+Докажем, что $F$ -- полный.
+Пусть $h : F(X) \to F(Y)$ -- некоторая стрелка.
+Тогда определим стрелку $f : X \to Y$ как следующую композицию:
+\[ \xymatrix{ X \ar[r]^-{\alpha^{-1}_X} & G(F(X)) \ar[r]^{G(h)} & G(F(Y)) \ar[r]^-{\alpha_Y} & Y } \]
+Тогда $\alpha^{-1}_Y \circ f \circ \alpha_X = G(h)$.
+С другой стороны, по естественности $\alpha$ у нас есть равенство $\alpha^{-1}_Y \circ f \circ \alpha_X = G(F(f))$.
+Следовательно $G(h) = G(F(f))$.
+По строгости $G$ мы получаем, что $h = F(f)$.
+Таким образом, $f$ -- прообраз $h$, то есть $F$ -- полный.
+\end{frame}
+
+\begin{frame}
+\frametitle{Доказательство (в обратную сторону)}
+Пусть $F$ -- полный, строгий и существенно сюръективен на объектах.
+Тогда для любого $X \in Ob(\D)$ существует объект $Y \in Ob(\C)$ и изоморфизм $\alpha_X : F(Y) \simeq X$.
+Определим $G : Ob(\D) \to Ob(\C)$ как функцию, возвращающую на каждом $X$ такой $Y$ (не важно какой конкретно).
+\[ \xymatrix{ F(G(X)) \ar[r]^-{\alpha_X} \ar@{-->}[d]_{F(f')} & X \ar[d]^f \\
+              F(G(Y)) \ar[r]_-{\alpha_Y}                      & Y
+            } \]
+Так как $F$ полон, то для каждого $f : X \to Y$ существует $f' : G(X) \to G(Y)$, такая что $F(f') = \alpha^{-1}_Y \circ f \circ \alpha_X$.
+Так как $F$ строг, то такая стрелка уникальна.
+Положим $G(f) = f'$.
+Из уникальности $f'$ следует, что $G$ сохраняет $id$ и $\circ$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Доказательство (продолжение)}
+Осталось проверить, что $G \circ F \simeq Id_\C$ и $F \circ G \simeq Id_\D$.
+Преобразование $\alpha_X : F(G(X)) \simeq X$ естественно, так как коммутативный квадрат на предыдущем слайде -- в точности квадрат естественности $\alpha$.
+
+Так как $F$ -- полный, то для любой стрелки $\alpha_{F(Y)} : F(G(F(Y))) \to F(Y)$ существует прообраз $\beta_Y : G(F(Y)) \to Y$.
+Все $\beta_Y$ -- изоморфизмы, так как обратные к ним -- это прообразы $\alpha^{-1}_{F(Y)} : F(Y) \to F(G(F(Y)))$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Доказательство (окончание)}
+Осталось проверить, что $\beta$ естественен.
+\[ \xymatrix{ G(F(X)) \ar[r]^-{\beta_X} \ar[d]_{G(F(f))} & X \ar[d]^f \\
+              G(F(Y)) \ar[r]_-{\beta_Y}                  & Y
+            } \]
+Применив $F$ к диаграмме выше, она начинает коммутировать, так как $\alpha$ естественен.
+Но так как $F$ -- строгий, исходная диаграмма также коммутирует.
+\end{frame}
+
+\end{document}

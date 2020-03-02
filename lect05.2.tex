@@ -1,0 +1,159 @@
+\documentclass{beamer}
+
+\usepackage[english,russian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[all]{xy}
+\usepackage{ifthen}
+\usepackage{xargs}
+
+\usetheme{Szeged}
+% \usetheme{Montpellier}
+% \usetheme{Malmoe}
+% \usetheme{Berkeley}
+% \usetheme{Hannover}
+\usecolortheme{beaver}
+
+\newcommand{\newref}[4][]{
+\ifthenelse{\equal{#1}{}}{\newtheorem{h#2}[hthm]{#4}}{\newtheorem{h#2}{#4}[#1]}
+\expandafter\newcommand\csname r#2\endcsname[1]{#4~\ref{#2:##1}}
+\newenvironmentx{#2}[2][1=,2=]{
+\ifthenelse{\equal{##2}{}}{\begin{h#2}}{\begin{h#2}[##2]}
+\ifthenelse{\equal{##1}{}}{}{\label{#2:##1}}
+}{\end{h#2}}
+}
+
+\newref[section]{thm}{theorem}{Theorem}
+\newref{lem}{lemma}{Lemma}
+\newref{prop}{proposition}{Proposition}
+\newref{cor}{corollary}{Corollary}
+
+\theoremstyle{definition}
+\newref{defn}{definition}{Definition}
+
+\newcommand{\cat}[1]{\mathbf{#1}}
+\renewcommand{\C}{\cat{C}}
+\newcommand{\D}{\cat{D}}
+\newcommand{\E}{\cat{E}}
+\newcommand{\Set}{\cat{Set}}
+\newcommand{\FinSet}{\cat{FinSet}}
+\newcommand{\Grp}{\cat{Grp}}
+\newcommand{\Ab}{\cat{Ab}}
+\newcommand{\Ring}{\cat{Ring}}
+\renewcommand{\Vec}{\cat{Vec}}
+\newcommand{\Hask}{\cat{Hask}}
+\newcommand{\Agda}{\cat{Agda}}
+\newcommand{\Mat}{\cat{Mat}}
+\newcommand{\Num}{\cat{Num}}
+
+\newcommand{\pb}[1][dr]{\save*!/#1-1.2pc/#1:(-1,1)@^{|-}\restore}
+\newcommand{\po}[1][dr]{\save*!/#1+1.2pc/#1:(1,-1)@^{|-}\restore}
+
+\AtBeginSection[]
+{
+\begin{frame}[c,plain,noframenumbering]
+\frametitle{План лекции}
+\tableofcontents[currentsection]
+\end{frame}
+}
+
+\makeatletter
+\defbeamertemplate*{footline}{my theme}{
+    \leavevmode
+}
+\makeatother
+
+\begin{document}
+
+\title{Теория категорий}
+\subtitle{$F$-алгебры}
+\author{Валерий Исаев}
+\maketitle
+
+\section{(Ко)индуктивные типы данных}
+
+\begin{frame}
+\frametitle{Индуктивные типы данных}
+\begin{itemize}
+\item Допустим мы хотим описать объект в произвольной категории, являющийся аналогом какой-либо структуры данных (списки, деревья, и так далее).
+\item Например, объект списков можно определить как бесконечную сумму
+\[ 1 + A + A^2 + \ldots + A^n + \ldots \]
+\item Но это определение плохо обобщается на другие типы данных.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Индуктивные типы данных}
+\begin{itemize}
+\item Проблема в том, что для произвольного типа данных сложно описать "объект данного типа фиксированного размера".
+\item Зато легко описать "объект размера $\leq$ данного".
+\item Например, если $T_n$ -- объект бинарных деревьев высоты $\leq n$, то $1 + A \times T_n \times T_n$ -- объект бинарных деревьев высоты $\leq n + 1$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Индуктивные типы данных}
+\begin{itemize}
+\item Теперь, имея некоторый набор объектов $\{ T_n \}_{n \in \mathbb{N}}$, нам нужно собрать из них один объект.
+\item В $\Set$ мы можем просто взять объединение множеств $\bigcup_{n \in \mathbb{N}} T_n$.
+\item В теории категорий объединение заменяется копределом.
+\item У нас есть очевидные морфизмы вложений $T_n \to T_{n+1}$. Теперь объект всех деревьев можно определить как следующий (секвенциальный) копредел:
+\[ T_0 \to T_1 \to T_2 \to \ldots \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Общее определение индуктивных типов данных}
+\begin{itemize}
+\item Любой (ко)индуктивный тип данных можно задать в виде функтора $F : \C \to \C$.
+\item Функтор, соответствующий, спискам определяется как $L_A(X) = 1 + A \times X$.
+\item Функтор, соответствующий, бинарным деревьям определяется как $T_A(X) = 1 + A \times X \times X$.
+\item В общем случае $F_D(X)$ задается как правая часть определения типа данных $D$, в котором все рекурсивные вхождения этого типа заменены на $X$.
+\item Таким образом, если $X$ является интерпретацией $D$, то он должен удовлетворять уравнению $X \simeq F(X)$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Алгебры над эндофунктором}
+\begin{itemize}
+\item Существует два канонических способа найти решение уравнения $X \simeq F(X)$, как начальную $F$-алгебру или конечную $F$-коалгебру.
+\item Если $F : \C \to \C$ -- некоторый эндофунктор, то \emph{$F$-алгебра} -- это пара $(X,\alpha)$, где $X$ -- объект $\C$, а $\alpha : F(X) \to X$ -- морфизм $\C$.
+\item Морфизм $F$-алгебр $(X,\alpha)$ и $(Y,\beta)$ -- это морфизм $f : X \to Y$ в $\C$ такой, что следующая диаграмма коммутирует:
+\[ \xymatrix{ F(X) \ar[r]^-\alpha \ar[d]_{F(f)} & X \ar[d]^f \\
+              F(Y) \ar[r]_-\beta                & Y
+            } \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Начальные алгебры}
+\begin{itemize}
+\item Легко видеть, что определения на предыдущем слайде задают категорию, которую мы будем обозначать $F\text{-}\mathrm{alg}$.
+\item Начальный объект этой категории называется начальной $F$-алгеброй, и если она существует, то она является решением уравнения $X \simeq F(X)$.
+\item Если функтор $F$ сохраняет секвенциальные копределы, то начальную $F$-алгебру можно определить как копредел следующей диаграммы:
+\[ 0 \xrightarrow{!_{F(0)}} F(0) \xrightarrow{F(!_{F(0)})} F(F(0)) \xrightarrow{F(F(!_{F(0)}))} F(F(F(0))) \to \ldots \]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Начальные алгебры и индуктивные типы}
+\begin{itemize}
+\item Начальные $F$-алгебры можно использовать для интерпретации индуктивных типов данных.
+\item Если $N(X) = X \amalg 1$ -- функтор, соответствующий типу данных унарных натуральных чисел, то начальная $N$-алгебра -- это в точности объект натуральных чисел.
+\item Если $L_A(X) = 1 \amalg A \times X$ -- функтор, соответствующий спискам, то начальная $L_A$-алгебра в $\Set$ -- это множество конечных списков элементов $A$.
+\item В общем случае начальная $L_A$-алгебра -- это копроизведение объектов $1$, $A$, $A^2$, $A^3$, ...
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Коалгебры над эндофунктором}
+\begin{itemize}
+\item \emph{Коалгебры} над $F : \C \to \C$ определяются дуальным образом как пары $(X,\alpha)$, где $X$ -- объект $\C$, а $\beta : X \to F(X)$ -- морфизм $\C$.
+\item По дуальности конечные $F$-коалгебры тоже являются решением уравнения $X \simeq F(X)$.
+\item Если функтор $F$ сохраняет секвенциальные пределы, то конечную $F$-коалгебру можно определить как предел следующей диаграммы:
+\[ \ldots \to F(F(F(1))) \xrightarrow{F(F(!_{F(1)}))} \to F(F(1)) \xrightarrow{F(!_{F(1)})} F(1) \xrightarrow{!_{F(1)}} 1 \]
+\item Терминальные коалгебры являются интерпретацией коиндуктивных типов данных.
+\item Например, терминальная $L_A$-коалгебра в $\Set$ -- это множество потенциально бесконечных списков.
+\end{itemize}
+\end{frame}
+
+\end{document}
